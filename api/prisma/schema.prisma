@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User {
+  id       String    @id @default(cuid())
+  username String    @unique @db.VarChar(64)
+  password String    @db.VarChar(255)
+  role     Role
+  workouts Workout[]
+
+  @@map("users")
+}
+
+model MuscleGroup {
+  id        Int                       @id @default(autoincrement())
+  name      String                    @unique
+  split     Split
+  exercises ExercisesOnMuscleGroups[]
+
+  @@map("muscle_groups")
+}
+
+model Exercise {
+  id           Int                       @id @default(autoincrement())
+  name         String                    @unique
+  movementType MovementType              @map("movement_type")
+  muscleGroups ExercisesOnMuscleGroups[]
+  workoutItems WorkoutItem[]
+
+  @@map("exercises")
+}
+
+model ExercisesOnMuscleGroups {
+  exerciseId    Int         @map("exercise_id")
+  muscleGroupId Int         @map("muscle_group_id")
+  exercise      Exercise    @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  muscleGroup   MuscleGroup @relation(fields: [muscleGroupId], references: [id], onDelete: Cascade)
+
+  @@id([exerciseId, muscleGroupId])
+  @@index([exerciseId])
+  @@index([muscleGroupId])
+  @@map("exercises_on_muscle_groups")
+}
+
+model Workout {
+  id           String        @id @default(cuid())
+  date         DateTime      @default(now())
+  userId       String        @map("user_id")
+  user         User          @relation(fields: [userId], references: [id])
+  workoutItems WorkoutItem[]
+
+  @@index([userId])
+  @@map("workouts")
+}
+
+model WorkoutItem {
+  id         String   @id @default(cuid())
+  workoutId  String   @map("workout_id")
+  exerciseId Int      @map("exercise_id")
+  exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  workout    Workout  @relation(fields: [workoutId], references: [id])
+  sets       Set[]
+
+  @@index([workoutId])
+  @@index([exerciseId])
+  @@map("workout_items")
+}
+
+model Set {
+  id            String      @id @default(cuid())
+  reps          Int         @default(0)
+  weight        Int         @default(0)
+  workoutItemId String      @map("workout_item_id")
+  workoutItem   WorkoutItem @relation(fields: [workoutItemId], references: [id])
+
+  @@index([workoutItemId])
+  @@map("sets")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum MovementType {
+  PULL
+  PUSH
+  STATIC
+}
+
+enum Split {
+  CORE
+  LOWER
+  UPPER
+}
