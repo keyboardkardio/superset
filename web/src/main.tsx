@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { router } from '@/router';
-import { ContainerApp } from '@/shared/components';
+import { ContainerApp } from '@/components';
 import barbell from '@/assets/images/barbell.jpg'
 
 const fonts = {
