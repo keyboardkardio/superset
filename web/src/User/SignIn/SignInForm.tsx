@@ -25,12 +25,10 @@ export default function SignInForm() {
             const user = await loginUser(form);
             storage.setToken(user.token)
             setUser(user);
+            reset();
             navigate('/create_workout');
         } catch (error) {
             console.log(error);
-        } finally {
-            reset();
-            navigate('/dashboard');
         }
     };
 

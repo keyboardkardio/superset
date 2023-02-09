@@ -3,14 +3,13 @@ import { useForm } from 'react-hook-form';
 import { Button, Input, Link, Stack } from '@chakra-ui/react';
 import api from '@/lib/api';
 import { SignInFormValues } from '../SignIn/SignInForm';
-import { User } from '..';
 
 interface SignUpFormValues extends SignInFormValues {
     passwordConfirmation: string;
 }
 
 const registerUser = async (form: SignInFormValues) => {
-    const response = await api.post<User>('/users/register', form);
+    const response: any = await api.post<SignUpFormValues>('/users/register', form);
     return response.data;
 };
 
@@ -21,11 +20,12 @@ export default function SignUpForm() {
     const onSubmit = async (form: SignUpFormValues) => {
         try {
             const response = await registerUser(form);
+            if (response.status === 201) {
+                reset();
+                navigate('/sign_in');
+            }
         } catch (error) {
             console.log(error);
-        } finally {
-            reset();
-            navigate('/sign_in');
         }
     };
 
