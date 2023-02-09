@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button, Heading, Stack } from '@chakra-ui/react';
-import * as D from '@/shared/utils/date';
+import * as D from '@/utils/date';
 import api from '@/lib/api';
 import WorkoutItem from './WorkoutItem';
 
