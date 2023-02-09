@@ -2,12 +2,17 @@ import bcrypt from 'bcrypt';
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import { prisma } from '../shared/services/prisma.service';
-import { sanitizeUser } from './user.utils';
+import { sanitizeUser } from './user.sanitize';
 
 export const userRouter = express.Router();
 
 userRouter.post('/register', async (request, response) => {
     const { username, password, passwordConfirmation } = request.body;
+
+    const userExists = await prisma.user.findUnique({ where: { username } });
+    if (userExists) {
+        response.status(400).json({ error: `The username: ${username} is not available.` });
+    }
 
     if (password !== passwordConfirmation) {
         response.status(400).json({ error: 'Passwords do not match.' });
@@ -28,9 +33,7 @@ userRouter.post('/register', async (request, response) => {
 userRouter.post('/login', async (request, response) => {
     try {
         const { username, password } = request.body;
-        const user = await prisma.user.findUnique({
-            where: { username },
-        });
+        const user = await prisma.user.findUnique({ where: { username } });
 
         if (!user) {
             response.status(401).json({ error: 'Invalid credentials.' });
