@@ -1,35 +1,44 @@
-import express from 'express';
-import jwt from 'jsonwebtoken';
-import { getTokenFrom, JwtContent } from '../shared/services/token.service';
+import { Request, Response, Router } from 'express';
+import { JsonWebTokenError } from 'jsonwebtoken';
+import * as tokenService from '#/auth/token.service';
 import * as workoutService from './workout.sevice';
 
-export const workoutRouter = express.Router();
+export const workoutRouter = Router();
 
-workoutRouter.get('/', async (_request, response) => {
-    const workouts = await workoutService.findAll();
-    if (workouts) response.json(workouts);
+workoutRouter.get('/', async (request: Request, response: Response) => {
+    const workouts = await workoutService.findAllWorkouts();
+    if (workouts) {
+        response.json(workouts);
+    }
 
     response.sendStatus(404).end();
 });
 
-workoutRouter.get(`/:id`, async (request, response) => {
+workoutRouter.get(`/:id`, async (request: Request, response: Response) => {
     const workout = await workoutService.findById(request.params.id);
-    if (workout) response.json(workout);
+    if (workout) {
+        response.json(workout);
+    }
 
     response.sendStatus(404).end();
 });
 
-workoutRouter.post('/', async (request, response) => {
+workoutRouter.post('/', async (request: Request, response: Response) => {
     try {
-        const token = getTokenFrom(request);
-        const jwtObject = jwt.verify(token, process.env.JWT_SECRET as string) as unknown as JwtContent;
+        const token = tokenService.getTokenFrom(request) as string;
+        const workoutId = await workoutService.createWorkout(tokenService.getUserIdFrom(token));
 
-        const userId: string = jwtObject.id;
-        const workoutId: string = await workoutService.createWorkout(userId);
         await Promise.all(
             request.body.workoutItems.map(
-                async (workoutItem: { exerciseId: number; sets: { reps: number; weight: number }[] }) => {
-                    await workoutService.createWorkoutItemWithSets(workoutId, workoutItem.exerciseId, workoutItem.sets);
+                async (workoutItem: {
+                    exerciseId: number;
+                    sets: { reps: number; weight: number }[];
+                }) => {
+                    await workoutService.createWorkoutItemWithSets(
+                        workoutId,
+                        workoutItem.exerciseId,
+                        workoutItem.sets,
+                    );
                 },
             ),
         );
@@ -37,17 +46,22 @@ workoutRouter.post('/', async (request, response) => {
         const workout = await workoutService.findById(workoutId);
 
         response.status(201).json(workout);
-    } catch (error) {
-        if (error instanceof jwt.JsonWebTokenError) {
+    } catch (error: any) {
+        if (error instanceof JsonWebTokenError) {
             response.status(401).json({ error: 'Invalid token' });
         }
 
-        response.status(500).json({ error: 'Server error' });
+        response.status(500).json({ error: error.message });
     }
 });
 
-workoutRouter.delete(`/workouts/:id`, (request, response) => {
-    const id = request.params.id;
-    workoutService.del(id);
-    response.status(204).end();
+workoutRouter.delete(`/workouts/:id`, async (request: Request, response: Response) => {
+    try {
+        const id = request.params.id;
+        await workoutService.deleteWorkout(id);
+
+        response.status(204).end();
+    } catch (error: any) {
+        response.status(500).json({ error: error.message });
+    }
 });

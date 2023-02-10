@@ -1,61 +1,31 @@
-import bcrypt from 'bcrypt';
-import express from 'express';
-import jwt from 'jsonwebtoken';
-import { prisma } from '../shared/services/prisma.service';
-import { sanitizeUser } from './user.sanitize';
+import { Request, Response, Router } from 'express';
+import * as authService from '#/auth/auth.service';
 
-export const userRouter = express.Router();
+export const userRouter = Router();
 
-userRouter.post('/register', async (request, response) => {
+userRouter.post('/register', async (request: Request, response: Response) => {
     const { username, password, passwordConfirmation } = request.body;
-
-    const userExists = await prisma.user.findUnique({ where: { username } });
-    if (userExists) {
-        response.status(400).json({ error: `The username: ${username} is not available.` });
-    }
-
     if (password !== passwordConfirmation) {
         response.status(400).json({ error: 'Passwords do not match.' });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await prisma.user.create({
-        data: {
-            username,
-            password: hashedPassword,
-            role: 'USER',
-        },
-    });
+    try {
+       const user = await authService.createNewUser(username, password)
 
-    response.status(201).json(sanitizeUser(user));
+        response.status(201).json(user);
+    } catch (error: any) {
+        response.status(500).json({ error: error.message });
+    }
 });
 
-userRouter.post('/login', async (request, response) => {
+userRouter.post('/login', async (request: Request, response: Response) => {
+    const { username, password } = request.body;
+    
     try {
-        const { username, password } = request.body;
-        const user = await prisma.user.findUnique({ where: { username } });
+        /** Include the user and their saved workouts in the response to avoid another request-response cycle. */
+        const userWithWorkoutsAndToken = await authService.loginUser(username, password);
 
-        if (!user) {
-            response.status(401).json({ error: 'Invalid credentials.' });
-            return;
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            response.status(500).json({ error: ' Invalid credentials' });
-            return;
-        }
-
-        const JWT_SECRET = process.env.JWT_SECRET;
-        if (!JWT_SECRET) {
-            response.status(500).end();
-            throw new Error('JWT secret is not set.');
-        }
-
-        const tokenContent = { username: user.username, id: user.id };
-        const token = jwt.sign(tokenContent, JWT_SECRET, { expiresIn: 60 * 60 * 2 });
-
-        response.status(200).json({ id: user.id, username: user.username, token });
+        response.status(200).json(userWithWorkoutsAndToken);
     } catch (error: any) {
         response.status(500).json({ error: error.message });
     }
