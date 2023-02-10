@@ -1,3 +1,5 @@
+/** A helper class that encapsulates errors pertaining to HTTP requests. */
+
 export default class HttpException extends Error {
     statusCode?: number;
     status?: number;

@@ -1,15 +1,9 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import storage from '@/utils/storage';
-
-const token = storage.getToken();
 
 const defaultConfiguration = {
-    baseURL: import.meta.env.DEV
-        ? 'http://localhost:7000/api'
-        : import.meta.env.VITE_APP_API_BASE_URL,
+    baseURL: 'http://localhost:7000/api',
     headers: {
         Accept: 'application/json',
-        Authorization: token ? `Bearer ${token}` : '',
         'Content-Type': 'application/json',
     },
 };

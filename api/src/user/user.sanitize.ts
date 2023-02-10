@@ -1,9 +1,7 @@
-import { User } from '@prisma/client';
-
-export function sanitizeUser(user: User) {
-    return {
-        id: user.id,
-        username: user.username,
-        role: user.role,
-    };
+export function sanitize<User, Key extends keyof User>(user: User, keys: Key[]): Omit<User, Key> {
+    for (let key of keys) {
+        delete user[key];
+    }
+    
+    return user;
 }
