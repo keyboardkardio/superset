@@ -1,5 +1,11 @@
+import { Heading } from '@chakra-ui/react';
+
 export default function Dashboard() {
     return (
-        <h1>Dashboard</h1>
-    )
+        <>
+            <Heading size={'4xl'} textAlign={'right'} color={'green.600'}>
+                Dashboard
+            </Heading>
+        </>
+    );
 }

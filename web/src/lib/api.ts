@@ -1,29 +1,25 @@
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 
-const defaultConfiguration = {
-    baseURL: 'http://localhost:7000/api',
+const BASE_URL = 'http://localhost:7000/api';
+
+const axiosInstance = axios.create({
+    baseURL: BASE_URL,
     headers: {
-        Accept: 'application/json',
+        'Accept': 'application/json',
         'Content-Type': 'application/json',
     },
+});
+
+export default {
+    get: <T>(url: string, config = {}) =>
+        axiosInstance.get<T>(url, config),
+
+    post: <T>(url: string, data = {}, config = {}) =>
+        axiosInstance.post<T>(url, data, config),
+
+    put: <T>(url: string, data = {}, config = {}) =>
+        axiosInstance.put<T>(url, data, config),
+
+    delete: <T>(url: string, config = {}) =>
+        axiosInstance.delete<T>(url, config),
 };
-
-const axiosInstance = axios.create(defaultConfiguration);
-const api = (axios: AxiosInstance) => {
-
-    return {
-        get: <T>(url: string, config: AxiosRequestConfig = {}) =>
-            axios.get<T>(url, config),
-
-        post: <T>(url: string, body: unknown, config: AxiosRequestConfig = {}) =>
-            axios.post<T>(url, body, config),
-
-        put: <T>(url: string, body: unknown, config: AxiosRequestConfig = {}) =>
-            axios.put<T>(url, body, config),
-
-        delete: <T>(url: string, config: AxiosRequestConfig = {}) =>
-            axios.delete<T>(url, config),
-    };
-};
-
-export default api(axiosInstance);

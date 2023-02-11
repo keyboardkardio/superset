@@ -1,7 +1,8 @@
-import { Set } from './WorkoutSet';
+import { ISet } from './WorkoutSet';
 
-export interface WorkoutItem {
+export interface IWorkoutItem {
     id?: string;
+    workoutId: string;
     exerciseId: number;
-    sets: Set[];
+    sets: ISet[];
 }

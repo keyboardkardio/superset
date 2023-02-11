@@ -34,14 +34,11 @@ export default function WorkoutCreate() {
 
     const onSubmit = async (data: FormValues) => {
         try {
-            const response = await api.post('/users/login', data, {
+            const response = await api.post('/workouts', data, {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
         } catch (error) {
             console.log(error);
-        } finally {
-            reset();
-            navigate('/dashboard');
         }
     };
 
