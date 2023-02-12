@@ -1,26 +1,40 @@
-import { RouterProvider } from 'react-router-dom';
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
-import { AuthProvider } from '@/Auth/AuthContext';
-import { router } from '@/router';
-import ContainerApp from '@/shared/components/AppContainer';
-
-const fonts = {
-    default: {
-        body: 'Urbanist',
-        headings: 'Urbanist',
-    },
-};
-
-const theme = extendTheme({ fonts });
+import { Routes, Route } from 'react-router-dom';
+import { AuthProvider } from '@/shared/context/AuthContext';
+import Layout from './Layout';
+import Home from './Home';
+import SignIn from './User/SignIn';
+import SignUp from './User/SignUp';
+import RequireAuth from './Auth/RequireAuth';
+import Dashboard from './User/Dashboard';
+import WorkoutCreate from './Workout/WorkoutCreate';
 
 export default function App() {
+
     return (
-        <ChakraProvider theme={theme}>
-            <ContainerApp>
-                <AuthProvider>
-                    <RouterProvider router={router} />
-                </AuthProvider>
-            </ContainerApp>
-        </ChakraProvider>
+        <AuthProvider>
+            <Routes>
+                <Route element={<Layout />}>
+                    <Route path='/' element={<Home />} />
+                    <Route path='/sign_in' element={<SignIn />} />
+                    <Route path='/sign_up' element={<SignUp />} />
+                    <Route
+                        path='/dashboard'
+                        element={
+                            <RequireAuth>
+                                <Dashboard />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path='/create_workout'
+                        element={
+                            <RequireAuth>
+                                <WorkoutCreate />
+                            </RequireAuth>
+                        }
+                    />
+                </Route>
+            </Routes>
+        </AuthProvider>
     );
 }

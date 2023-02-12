@@ -34,7 +34,7 @@ export default function WorkoutCreate() {
 
     const onSubmit = async (data: FormValues) => {
         try {
-            const response = await api.post('/workouts', data, {
+            const response = await api.post('/workouts', JSON.stringify(data), {
                 headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
             });
         } catch (error) {
@@ -55,9 +55,7 @@ export default function WorkoutCreate() {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <Stack spacing={8}>
                     <WorkoutItem {...{ control, register, defaultValues, getValues, setValue, errors }} />
-                    <Button type={'submit'} size={'lg'} bgColor={'green.500'}>
-                        Finish Session
-                    </Button>
+                    <Button type={'submit'} size={'lg'} bgColor={'green.500'}>Finish Session</Button>
                 </Stack>
             </form>
             <Button

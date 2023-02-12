@@ -1,29 +1,29 @@
 import { useEffect, useState } from 'react';
 import { Control, useFieldArray, UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
-import { DeleteIcon } from '@chakra-ui/icons';
-import { Button, Card, Select, Stack } from '@chakra-ui/react';
-import { Exercise } from '@/Exercise';
 import api from '@/lib/api';
+import { Exercise } from '@/Exercise';
 import { WorkoutSet } from './WorkoutSet';
 import { FormValues } from '.';
+import { DeleteIcon } from '@chakra-ui/icons';
+import { Button, Card, Select, Stack } from '@chakra-ui/react';
 
-export default function WorkoutItem({ control, register }: {
+interface IProps {
     control: Control<FormValues>;
     register: UseFormRegister<FormValues>;
     setValue: UseFormSetValue<FormValues>;
     getValues: UseFormGetValues<FormValues>;
-}) {
-    const { fields, append, remove } = useFieldArray({
-        control,
-        name: 'workoutItems',
-    });
-    
+}
+
+export default function WorkoutItem({ control, register, setValue, getValues }: IProps) {
+    const { fields, append, remove } = useFieldArray({ control, name: 'workoutItems' });
     const [exerciseList, setExerciseList] = useState<Exercise[]>([]);
-    
+
     useEffect(() => {
         const fetchExerciseList = async () => {
             try {
-                const { data: exercises } = await api.get<Exercise[]>('/exercises');
+                const { data: exercises } = await api.get<Exercise[]>('/exercises', {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+                });
                 setExerciseList(exercises);
             } catch (error) {
                 console.log(error);
@@ -36,22 +36,10 @@ export default function WorkoutItem({ control, register }: {
     return (
         <>
             {fields.map((item, index) => (
-                <Card
-                    key={item.id}
-                    p={4}
-                    backdropFilter={'auto'}
-                    backdropBlur={'md'}
-                    bgColor={'rgba(255, 255, 255, 0.1)'}
-                    variant={'outline'}
-                >
+                <Card key={item.id} p={4} backdropFilter={'auto'} backdropBlur={'md'} bgColor={'rgba(255, 255, 255, 0.1)'} variant={'outline'}>
                     <Stack spacing={4}>
                         <Stack direction={'row'}>
-                            <Select
-                                size={'lg'}
-                                color={'gray.400'}
-                                variant={'unstyled'}
-                                {...register(`workoutItems.${index}.exerciseId` as const)}
-                            >
+                            <Select size={'lg'} color={'gray.400'} variant={'outline'} {...register(`workoutItems.${index}.exerciseId` as const)}>
                                 {exerciseList.map((exercise: Exercise) => (
                                     <option key={exercise.id} value={exercise.id}>
                                         {exercise.name}
@@ -70,10 +58,10 @@ export default function WorkoutItem({ control, register }: {
                 type={'button'}
                 size={'lg'}
                 variant={'outline'}
-                backdropFilter={'auto'}
-                backdropBlur={'md'}
-                bgColor={'rgba(255, 255, 255, 0.1)'}
                 color={'green.500'}
+                backdropBlur={'md'}
+                backdropFilter={'auto'}
+                bgColor={'rgba(255, 255, 255, 0.1)'}
                 onClick={() => {
                     append({ exerciseId: 0, sets: [{ reps: 0, weight: 0 }] });
                 }}

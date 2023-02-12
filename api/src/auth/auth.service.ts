@@ -6,16 +6,7 @@ import { sanitize } from '#/user/user.sanitize';
 
 export async function loginUser(username: string, password: string) {
     try {
-        const user = await prisma.user.findUnique({
-            where: { username },
-            include: {
-                workouts: {
-                    include: {
-                        workoutItems: true,
-                    },
-                },
-            },
-        });
+        const user = await prisma.user.findUnique({ where: { username } });
         if (user && (await bcrypt.compare(password, user.password))) {
             return {
                 user: sanitize(user, ['password']),

@@ -1,11 +1,12 @@
-import { Heading } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
+import PrimaryButton from '@/shared/components/buttons/PrimaryButton';
 
 export default function Dashboard() {
+
     return (
-        <>
-            <Heading size={'4xl'} textAlign={'right'} color={'green.600'}>
-                Dashboard
-            </Heading>
-        </>
+        <Stack>
+            <PrimaryButton to={'/create_workout'}>Create Workout</PrimaryButton>
+            <PrimaryButton to={'/workout_log'}>Workout Log</PrimaryButton>
+        </Stack>
     );
 }

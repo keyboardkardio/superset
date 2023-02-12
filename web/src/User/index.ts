@@ -7,7 +7,11 @@ export interface IUser {
     role: string;
 }
 
-export interface IAppUser extends Partial<IUser> {
-    token: string;
-    workouts?: IWorkout[];
+export interface IAppUser {
+    user: {
+        id: string;
+        username: string;
+        role: string;
+        workouts?: IWorkout[];
+    };
 }

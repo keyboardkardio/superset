@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { AuthContext } from './AuthContext';
+import { AuthContext } from '@/shared/context/AuthContext';
 
 export default function RequireAuth({ children }: { children: React.ReactNode }) {
     const { isAuthenticated } = useContext(AuthContext);
@@ -12,7 +12,7 @@ export default function RequireAuth({ children }: { children: React.ReactNode })
         );
     } else {
         return (
-            <Navigate state={{ from: location }} to='/login/' />
+            <Navigate state={{ from: location }} to='/sign_in' />
         );
     }
 }

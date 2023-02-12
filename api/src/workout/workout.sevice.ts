@@ -1,31 +1,49 @@
-import { Prisma, Workout } from '@prisma/client';
+import { Workout } from '@prisma/client';
 import { prisma } from '#shared/services/prisma.service';
 
-export async function createWorkout(userId: string): Promise<string> {
-    const workout = await prisma.workout.create({ data: { user: { connect: { id: userId } } } });
+export async function createWorkout(userId: string) {
+    const workout = await prisma.workout.create({
+        data: { userId },
+    });
 
     return workout.id;
 }
 
-export async function createWorkoutItem(data: Prisma.WorkoutItemCreateInput): Promise<string> {
-    const workoutItem = await prisma.workoutItem.create({ data });
+export async function createWorkoutItem(workoutId: string, exerciseId: number) {
+    const workoutItem = await prisma.workoutItem.create({
+        data: {
+            workoutId,
+            exerciseId: parseInt(exerciseId as unknown as string, 10),
+        },
+    });
 
     return workoutItem.id;
 }
 
-export async function createSet(data: Prisma.SetCreateInput): Promise<string> {
-    const set = await prisma.set.create({ data });
+export async function createSet(workoutItemId: string, reps: number, weight: number) {
+    const set = await prisma.set.create({
+        data: {
+            workoutItemId,
+            reps: parseInt(reps as unknown as string, 10),
+            weight: parseInt(weight as unknown as string, 10),
+        },
+    });
 
     return set.id;
 }
 
-export async function createWorkoutItemWithSets(workoutId: string, exerciseId: number, sets: Prisma.SetCreateManyWorkoutItemInput[]) {
+export async function createWorkoutItemWithSets(workoutId: string, exerciseId: number, sets: { reps: number; weight: number }[]) {
     const workoutItem = await prisma.workoutItem.create({
         data: {
             workoutId,
-            exerciseId,
+            exerciseId: parseInt(exerciseId as unknown as string, 10),
             sets: {
-                create: sets.map((set) => ({ data: set })),
+                createMany: {
+                    data: sets.map((set) => ({
+                        reps: parseInt(set.reps as unknown as string, 10),
+                        weight: parseInt(set.weight as unknown as string, 10),
+                    })),
+                },
             },
         },
     });
@@ -45,9 +63,7 @@ export async function deleteWorkout(id: string) {
 }
 
 export async function findAllWorkouts(): Promise<Partial<Workout>[]> {
-    const workouts = await prisma.workout.findMany({
-        select: getWorkoutSelection(),
-    });
+    const workouts = await prisma.workout.findMany({ select: getWorkoutSelection() });
 
     return workouts;
 }
