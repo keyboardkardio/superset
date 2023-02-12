@@ -3,10 +3,10 @@
     "scripts": {
         "seed:dev": "node prisma/seed.ts",
         "seed:prod": "node prisma/seed.prod.ts",
-        "tsc": "tsc",
         "dev": "tsnd --transpile-only --respawn -r tsconfig-paths/register src/index.ts",
-        "lint": "eslint --ext .ts",
-        "build": "npm install && tsc",
+        "clean": "npm cache clean --force && rm -rf dist",
+        "prebuild": "npm install && tsc",
+        "build": "npm run clean && npm run prebuild",
         "start": "node dist/index.js"
     },
     "dependencies": {
