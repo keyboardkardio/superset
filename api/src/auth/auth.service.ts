@@ -8,10 +8,7 @@ export async function loginUser(username: string, password: string) {
     try {
         const user = await prisma.user.findUnique({ where: { username } });
         if (user && (await bcrypt.compare(password, user.password))) {
-            return {
-                user: sanitize(user, ['password']),
-                token: generateTokenFor(user),
-            };
+            return generateTokenFor(user);
         }
 
         throw new Error('Invalid credentials.');

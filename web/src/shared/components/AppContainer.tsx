@@ -13,7 +13,6 @@ export default function AppContainer({ children }: { children: React.ReactNode }
             flexDirection={'column'}
             justifyContent={'space-between'}
             minHeight={'100vh'}
-            padding={'2rem'}
         >
             {children}
         </Box>

@@ -6,12 +6,11 @@ import * as workoutService from './workout.sevice';
 export const workoutRouter = Router();
 
 workoutRouter.get('/', async (request: Request, response: Response) => {
-    const workouts = await workoutService.findAllWorkouts();
+    const token = tokenService.getTokenFrom(request) as string;
+    const workouts = await workoutService.findAllWorkouts(tokenService.getUserIdFrom(token));
     if (workouts) {
         response.json(workouts);
     }
-
-    response.sendStatus(404).end();
 });
 
 workoutRouter.get(`/:id`, async (request: Request, response: Response) => {
@@ -19,9 +18,15 @@ workoutRouter.get(`/:id`, async (request: Request, response: Response) => {
     if (workout) {
         response.json(workout);
     }
-
-    response.sendStatus(404).end();
 });
+
+workoutRouter.get('/latest', async (request: Request, response: Response) => {
+    const token = tokenService.getTokenFrom(request) as string;
+    const workout = await workoutService.findLastWorkout(tokenService.getUserIdFrom(token));
+    if (workout) {
+        response.json(workout);
+    }
+})
 
 workoutRouter.post('/', async (request: Request, response: Response) => {
     try {

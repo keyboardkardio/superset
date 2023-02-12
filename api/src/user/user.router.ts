@@ -20,12 +20,10 @@ userRouter.post('/register', async (request: Request, response: Response) => {
 
 userRouter.post('/login', async (request: Request, response: Response) => {
     const { username, password } = request.body;
-    
     try {
-        /** Include the user and their saved workouts in the response to avoid another request-response cycle. */
-        const userWithWorkoutsAndToken = await authService.loginUser(username, password);
+        const token = await authService.loginUser(username, password);
 
-        response.status(200).json(userWithWorkoutsAndToken);
+        response.status(200).json(token);
     } catch (error: any) {
         response.status(500).json({ error: error.message });
     }

@@ -1,7 +1,6 @@
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button, Heading, Input, Link, Stack } from '@chakra-ui/react';
-import api from '@/lib/api';
 import { SignInFormValues } from '../SignIn';
 
 interface SignUpFormValues extends SignInFormValues {
@@ -14,7 +13,13 @@ export default function SignUp() {
 
     const onSubmit = async (form: SignUpFormValues) => {
         try {
-            const response = await api.post('/users', JSON.stringify(form));
+            const response = await fetch('http://localhost:7000/api/users/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(form),
+            });
             if (response.status === 201) {
                 reset();
                 navigate('/sign_in');

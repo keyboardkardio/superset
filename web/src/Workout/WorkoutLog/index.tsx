@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, Heading, Stack, Text } from '@chakra-ui/react';
+import PrimaryButton from '@/shared/components/buttons/PrimaryButton';
 
 interface WorkoutItem {
     id: string;
@@ -13,7 +14,7 @@ interface WorkoutItem {
     }[];
 }
 
-export default function Dashboard() {
+export default function WorkoutLog() {
     const [workout, setWorkout] = useState<any>();
 
     useEffect(() => {
@@ -32,7 +33,7 @@ export default function Dashboard() {
 
     return (
         <Stack>
-            <Heading color={'green.500'}>Last Workout</Heading>
+            <Heading color={'green.500'}>Workout Log</Heading>
             {workout?.map((workout: any) => (
                 <Card
                     key={workout.id}

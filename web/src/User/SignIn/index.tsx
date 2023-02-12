@@ -1,10 +1,5 @@
-import { useContext, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { AuthContext } from '@/shared/context/AuthContext';
-import { IAppUser } from '@/User';
-import { IWorkout } from '@/Workout';
-import api from '@/lib/api';
 import { Button, Heading, Input, Link, Stack } from '@chakra-ui/react';
 
 export interface SignInFormValues {
@@ -12,47 +7,24 @@ export interface SignInFormValues {
     password: string;
 }
 
-export interface LoginResponse {
-    user: {
-        id: string;
-        username: string;
-        role: string;
-        workouts?: IWorkout[];
-    };
-    token: string;
-}
-
-const initialUserState = {
-    user: {
-        id: '',
-        username: '',
-        role: '',
-        workouts: [],
-    },
-};
-
 export default function SignIn() {
-    const { register, handleSubmit } = useForm<SignInFormValues>();
-    const { isAuthenticated, setAuthenticated } = useContext(AuthContext);
-    const [user, setUser] = useState<IAppUser>(initialUserState);
+    const { reset, register, handleSubmit } = useForm<SignInFormValues>();
     const navigate = useNavigate();
 
     const onSubmit = async (credentials: SignInFormValues) => {
         try {
-            const response = await api.post<LoginResponse>('/users/login', JSON.stringify(credentials));
-            const { user, token } = response.data;
-            if (token && response.status === 200) {
+            const response = await fetch('http://localhost:7000/api/users/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(credentials),
+            });
+            const token = await response.json();
+            if (response.ok) {
+                reset();
                 localStorage.setItem('token', token);
-                setAuthenticated(true);
-                setUser({
-                    user: {
-                        id: user.id,
-                        username: user.username,
-                        role: user.role,
-                        workouts: user.workouts,
-                    },
-                });
-                navigate('/dashboard', { state: { user } });
+                navigate('/dashboard');
             }
         } catch (error) {
             console.log(error);

@@ -1,27 +1,35 @@
-import { useContext } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { AuthContext } from '@/shared/context/AuthContext';
-import { CloseIcon, HamburgerIcon } from '@chakra-ui/icons';
+import { HamburgerIcon } from '@chakra-ui/icons';
 import {
     Box,
     Button,
-    Collapse,
-    Flex,
     Heading,
-    IconButton,
-    Link,
-    Stack,
-    Text,
-    useDisclosure,
+    HStack,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuList,
 } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 
 export default function AppBar() {
-    const { isAuthenticated } = useContext(AuthContext);
-    const { isOpen, onToggle } = useDisclosure();
-
     return (
-        <Box>
-            <Heading color={'green.500'} fontWeight={400} fontSize={'3xl'}>SuperSet</Heading>
+        <Box backgroundColor={'green.400'} padding={'1rem'} position={'fixed'} width={'100%'} bottom={0} marginTop={'2rem'}>
+            <HStack justify={'space-between'}>
+                <Menu>
+                    <MenuButton as={Button} backgroundColor={'transparent'}>
+                        <HamburgerIcon boxSize={'1.4rem'} />
+                    </MenuButton>
+                    <MenuList>
+                        <MenuItem as={Link} to={'/dashboard'}>Dashboard</MenuItem>
+                        <MenuItem as={Link} to={'/create_workout'}>Create Workout</MenuItem>
+                        <MenuItem as={Link} to={'/workout_log'}>Workout Log</MenuItem>
+                    </MenuList>
+                </Menu>
+                <Heading>SuperSet</Heading>
+                <Button variant={'unstyled'} onClick={() => localStorage.removeItem('token')}>
+                    Sign Out
+                </Button>
+            </HStack>
         </Box>
     );
 }

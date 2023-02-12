@@ -1,21 +1,24 @@
 import { Outlet } from 'react-router-dom';
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { Box, ChakraProvider, extendTheme } from '@chakra-ui/react';
 import AppContainer from '@/shared/components/AppContainer';
+import '@fontsource/urbanist';
+import AppBar from './shared/components/AppBar';
 
-const fonts = {
-    default: {
+const theme = extendTheme({
+    fonts: {
         body: 'Urbanist',
-        headings: 'Urbanist',
+        heading: 'Urbanist',
     },
-};
-
-const theme = extendTheme({ fonts });
+});
 
 export default function Layout() {
     return (
         <ChakraProvider theme={theme}>
             <AppContainer>
-                <Outlet />
+                <Box padding={'1rem'}>
+                    <Outlet />
+                </Box>
+                <AppBar />
             </AppContainer>
         </ChakraProvider>
     );

@@ -6,7 +6,6 @@ import { userRouter } from '#/user/user.router';
 import { exerciseRouter } from '#/exercise/exercise.router';
 import { workoutRouter } from '#/workout/workouts.router';
 
-import { authenticate } from '#shared/middleware/jwt.middleware';
 import { errorHandler } from '#shared/middleware/error.middleware';
 import { notFoundHandler } from '#shared/middleware/not-found.middleware';
 
@@ -22,9 +21,6 @@ server.use(cors());
 server.use(helmet());
 
 server.use('/api/users', userRouter);
-
-// Authenticate and authorize all requests from this point on.
-server.use(authenticate);
 server.use('/api/exercises', exerciseRouter);
 server.use('/api/workouts', workoutRouter);
 
