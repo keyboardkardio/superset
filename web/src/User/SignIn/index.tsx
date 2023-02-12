@@ -2,6 +2,8 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button, Heading, Input, Link, Stack } from '@chakra-ui/react';
 
+const baseUrl = import.meta.env.VITE_APP_API_BASE_URL;
+
 export interface SignInFormValues {
     username: string;
     password: string;
@@ -13,7 +15,7 @@ export default function SignIn() {
 
     const onSubmit = async (credentials: SignInFormValues) => {
         try {
-            const response = await fetch('http://localhost:7000/api/users/login', {
+            const response = await fetch(`${baseUrl}/users/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

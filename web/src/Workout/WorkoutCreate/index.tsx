@@ -4,6 +4,8 @@ import { Button, Heading, Stack } from '@chakra-ui/react';
 import * as D from '@/utils/date';
 import WorkoutItem from './WorkoutItem';
 
+const baseUrl = import.meta.env.VITE_APP_API_BASE_URL;
+
 export interface FormValues {
     userId?: string;
     workoutItems: {
@@ -33,7 +35,7 @@ export default function WorkoutCreate() {
 
     const onSubmit = async (data: FormValues) => {
         try {
-            const response = await fetch('http://localhost:7000/api/workouts', {
+            const response = await fetch(`${baseUrl}/workouts`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,

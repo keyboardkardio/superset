@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { Button, Heading, Input, Link, Stack } from '@chakra-ui/react';
 import { SignInFormValues } from '../SignIn';
 
+const baseUrl = import.meta.env.VITE_APP_API_BASE_URL;
+
 interface SignUpFormValues extends SignInFormValues {
     passwordConfirmation: string;
 }
@@ -13,7 +15,7 @@ export default function SignUp() {
 
     const onSubmit = async (form: SignUpFormValues) => {
         try {
-            const response = await fetch('http://localhost:7000/api/users/register', {
+            const response = await fetch(`${baseUrl}/users/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

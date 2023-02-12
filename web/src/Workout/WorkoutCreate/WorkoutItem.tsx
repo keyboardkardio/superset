@@ -12,7 +12,7 @@ import { FormValues } from '.';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Button, Card, Select, Stack } from '@chakra-ui/react';
 
-const baseUrl = 'http://localhost:7000/api';
+const baseUrl = import.meta.env.VITE_APP_API_BASE_URL;
 
 interface IProps {
     control: Control<FormValues>;
