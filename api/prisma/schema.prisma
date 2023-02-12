@@ -4,8 +4,7 @@ generator client {
 
 datasource db {
   provider     = "mysql"
-  // url          = env("DATABASE_URL")
-  url          = "mysql://root@127.0.0.1:3306/superset"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
