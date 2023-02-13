@@ -6,6 +6,7 @@ import SignUp from './User/SignUp';
 import Dashboard from './User/Dashboard';
 import WorkoutCreate from './Workout/WorkoutCreate';
 import WorkoutLog from './Workout/WorkoutLog';
+import RequireAuth from './Auth/RequireAuth';
 
 export default function App() {
     return (
@@ -14,9 +15,9 @@ export default function App() {
                 <Route path='/' element={<Home />} />
                 <Route path='/sign_in' element={<SignIn />} />
                 <Route path='/sign_up' element={<SignUp />} />
-                <Route path='/dashboard' element={<Dashboard />} />
-                <Route path='/workout_log' element={<WorkoutLog />} />
-                <Route path='/create_workout' element={<WorkoutCreate />} />
+                <Route path='/dashboard' element={<RequireAuth><Dashboard /></RequireAuth>} />
+                <Route path='/workout_log' element={<RequireAuth><WorkoutLog /></RequireAuth>} />
+                <Route path='/create_workout' element={<RequireAuth><WorkoutCreate /></RequireAuth>} />
             </Route>
         </Routes>
     );

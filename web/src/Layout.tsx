@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
 import { Box, ChakraProvider, extendTheme } from '@chakra-ui/react';
 import AppContainer from '@/shared/components/AppContainer';
+import AppBar from '@/shared/components/AppBar';
 import '@fontsource/urbanist';
-import AppBar from './shared/components/AppBar';
 
 const theme = extendTheme({
     fonts: {

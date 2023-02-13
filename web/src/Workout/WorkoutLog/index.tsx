@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, Heading, Stack, Text } from '@chakra-ui/react';
-import PrimaryButton from '@/shared/components/buttons/PrimaryButton';
+
+const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
 
 interface WorkoutItem {
     id: string;
@@ -19,7 +20,7 @@ export default function WorkoutLog() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch('http://localhost:7000/api/workouts', {
+            const response = await fetch(`${baseUrl}/workouts`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                     'Content-Type': 'application/json',

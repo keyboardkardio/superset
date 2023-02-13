@@ -4,7 +4,7 @@ import { Button, Heading, Stack } from '@chakra-ui/react';
 import * as D from '@/utils/date';
 import WorkoutItem from './WorkoutItem';
 
-const baseUrl = import.meta.env.VITE_APP_API_BASE_URL;
+const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
 
 export interface FormValues {
     userId?: string;

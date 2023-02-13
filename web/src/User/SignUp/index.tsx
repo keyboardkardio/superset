@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import { Button, Heading, Input, Link, Stack } from '@chakra-ui/react';
 import { SignInFormValues } from '../SignIn';
 
-const baseUrl = import.meta.env.VITE_APP_API_BASE_URL;
+const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
 
 interface SignUpFormValues extends SignInFormValues {
     passwordConfirmation: string;
