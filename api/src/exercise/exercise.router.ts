@@ -1,5 +1,5 @@
 import { Request, Response, Router} from 'express';
-import { prisma } from '#shared/services/prisma.service';
+import { prisma } from '../shared/services/prisma.service';
 
 export const exerciseRouter = Router();
 

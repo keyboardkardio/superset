@@ -1,5 +1,5 @@
 import { Workout } from '@prisma/client';
-import { prisma } from '#shared/services/prisma.service';
+import { prisma } from '../shared/services/prisma.service';
 
 export async function createWorkout(userId: string) {
     const workout = await prisma.workout.create({

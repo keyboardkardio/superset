@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { JsonWebTokenError } from 'jsonwebtoken';
-import * as tokenService from '#/auth/token.service';
+import * as tokenService from '../auth/token.service';
 import * as workoutService from './workout.sevice';
 
 export const workoutRouter = Router();

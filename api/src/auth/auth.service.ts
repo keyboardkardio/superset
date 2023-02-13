@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import { Role } from '@prisma/client';
-import { prisma } from '#/shared/services/prisma.service';
+import { prisma } from '../shared/services/prisma.service';
 import { generateTokenFor } from './token.service';
-import { sanitize } from '#/user/user.sanitize';
+import { sanitize } from '../user/user.sanitize';
 
 export async function loginUser(username: string, password: string) {
     try {
