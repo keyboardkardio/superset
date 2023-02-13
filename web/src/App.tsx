@@ -11,8 +11,8 @@ import { AuthProvider } from './shared/context/AuthContext';
 
 export default function App() {
     return (
-        <Routes>
-            <AuthProvider>
+        <AuthProvider>
+            <Routes>
                 <Route element={<Layout />}>
                     <Route path='/' element={<Home />} />
                     <Route path='/sign_in' element={<SignIn />} />
@@ -42,7 +42,7 @@ export default function App() {
                         }
                     />
                 </Route>
-            </AuthProvider>
-        </Routes>
+            </Routes>
+        </AuthProvider>
     );
 }
