@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Card, Heading, Stack, Text } from '@chakra-ui/react';
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
+const baseUrl = process.env.REACT_APP_DB_URL as string;
 
 interface WorkoutItem {
     id: string;

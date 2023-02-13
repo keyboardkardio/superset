@@ -1,21 +1,12 @@
-import { HamburgerIcon } from '@chakra-ui/icons';
-import {
-    Box,
-    Button,
-    Heading,
-    HStack,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-} from '@chakra-ui/react';
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { HamburgerIcon } from '@chakra-ui/icons';
+import { Box, Button, Heading, HStack, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 
 export default function AppBar() {
     const { isAuthenticated } = useContext(AuthContext);
-    
+
     return (
         <Box
             backgroundColor={'green.400'}
@@ -43,10 +34,15 @@ export default function AppBar() {
                     </MenuList>
                 </Menu>
                 <Heading>SuperSet</Heading>
-                { isAuthenticated
-                    ? <Button variant={'unstyled'} onClick={() => localStorage.removeItem('token')}>Sign Out</Button>
-                    : <Button as={Link} to={'/sign_in'}>Sign In</Button>
-                }
+                {isAuthenticated ? (
+                    <Button variant={'unstyled'} onClick={() => localStorage.removeItem('token')}>
+                        Sign Out
+                    </Button>
+                ) : (
+                    <Button as={Link} to={'/sign_in'}>
+                        Sign In
+                    </Button>
+                )}
             </HStack>
         </Box>
     );

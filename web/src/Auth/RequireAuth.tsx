@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { AuthContext } from '@/shared/context/AuthContext';
+import { AuthContext } from '../shared/context/AuthContext';
 
 export default function RequireAuth({ children }: { children: React.ReactNode }) {
     const { isAuthenticated } = useContext(AuthContext);

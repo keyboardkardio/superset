@@ -1,4 +1,4 @@
-import { IWorkout } from '@/Workout';
+import { IWorkout } from '../Workout';
 
 export interface IUser {
     id: string;

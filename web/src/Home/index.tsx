@@ -1,5 +1,5 @@
 import { Heading, Stack } from '@chakra-ui/react';
-import PrimaryButton from '@/shared/components/buttons/PrimaryButton';
+import PrimaryButton from '../shared/components/buttons/PrimaryButton';
 
 export default function Home() {
     return (

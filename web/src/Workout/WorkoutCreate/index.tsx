@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button, Heading, Stack } from '@chakra-ui/react';
-import * as D from '@/utils/date';
+import * as D from '../../utils/date';
 import WorkoutItem from './WorkoutItem';
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
+const baseUrl = process.env.REACT_APP_DB_URL as string;
 
 export interface FormValues {
     userId?: string;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box } from '@chakra-ui/react';
-import barbell from '@/assets/images/barbell.jpg';
+import barbell from '../../assets/images/barbell.jpg';
 
 export default function AppContainer({ children }: { children: React.ReactNode }) {
     return (

@@ -1,18 +1,12 @@
 import { useEffect, useState } from 'react';
-import {
-    Control,
-    useFieldArray,
-    UseFormGetValues,
-    UseFormRegister,
-    UseFormSetValue,
-} from 'react-hook-form';
-import { IExercise } from '@/Exercise';
+import { Control, useFieldArray, UseFormGetValues, UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import { IExercise } from '../../Exercise';
 import { WorkoutSet } from './WorkoutSet';
 import { FormValues } from '.';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Button, Card, Select, Stack } from '@chakra-ui/react';
 
-const baseUrl = import.meta.env.VITE_API_BASE_URL as string;
+const baseUrl = process.env.REACT_APP_DB_URL as string;
 
 interface IProps {
     control: Control<FormValues>;
