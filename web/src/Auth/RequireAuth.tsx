@@ -7,8 +7,12 @@ export default function RequireAuth({ children }: { children: React.ReactNode })
     const location = useLocation();
 
     if (isAuthenticated) {
-        return <>{children}</>;
+        return (
+            <>{children}</>
+        );
     } else {
-        return <Navigate state={{ from: location }} to='/sign_in' />;
+        return (
+            <Navigate state={{ from: location }} to='/sign_in' />
+        );
     }
 }
