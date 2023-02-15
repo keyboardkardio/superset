@@ -67,33 +67,9 @@ export async function deleteWorkout(id: string) {
 }
 
 export async function findAllWorkouts(userId: string) {
-    const workouts = await prisma.user.findUnique({
+    const workouts = await prisma.workout.findMany({
         where: { id: userId },
-        select: {
-            workouts: {
-                select: {
-                    id: true,
-                    date: true,
-                    workoutItems: {
-                        select: {
-                            id: true,
-                            exercise: {
-                                select: {
-                                    name: true,
-                                },
-                            },
-                            sets: {
-                                select: {
-                                    id: true,
-                                    reps: true,
-                                    weight: true,
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
+        select: getWorkoutSelection(),
     });
 
     return workouts;
@@ -114,9 +90,28 @@ export async function findById(id: string): Promise<Partial<Workout> | null> {
 export async function findLastWorkout(userId: string) {
     const workout = await prisma.workout.findMany({
         where: { userId },
-        select: getWorkoutSelection(),
-        orderBy: { date: 'desc' },
-        take: 1,
+        select: {
+            id: true,
+            date: true,
+            workoutItems: {
+                select: {
+                    id: true,
+                    exercise: {
+                        select: {
+                            name: true,
+                        },
+                    },
+                    sets: {
+                        select: {
+                            id: true,
+                            reps: true,
+                            weight: true,
+                        },
+                    },
+                },
+                take: 1
+            },
+        },
     });
 
     return workout;
