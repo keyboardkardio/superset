@@ -1,20 +1,20 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { Box, Button, Heading, HStack, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
+import { AuthContext } from '../AuthContext';
 
-export default function AppBar() {
-    const { isAuthenticated } = useContext(AuthContext);
+export function AppBar() {
+    const { isLoggedIn, logout } = useContext(AuthContext);
 
     return (
         <Box
-            backgroundColor={'green.400'}
+            bottom={0}
+            width={'100%'}
             padding={'1rem'}
             position={'fixed'}
-            width={'100%'}
-            bottom={0}
             marginTop={'2rem'}
+            backgroundColor={'green.400'}
         >
             <HStack justify={'space-between'}>
                 <Menu>
@@ -25,21 +25,21 @@ export default function AppBar() {
                         <MenuItem as={Link} to={'/dashboard'}>
                             Dashboard
                         </MenuItem>
-                        <MenuItem as={Link} to={'/create_workout'}>
+                        <MenuItem as={Link} to={'/workouts/new'}>
                             Create Workout
                         </MenuItem>
-                        <MenuItem as={Link} to={'/workout_log'}>
+                        <MenuItem as={Link} to={'/workouts/log'}>
                             Workout Log
                         </MenuItem>
                     </MenuList>
                 </Menu>
                 <Heading>SuperSet</Heading>
-                {isAuthenticated ? (
-                    <Button variant={'unstyled'} onClick={() => localStorage.removeItem('token')}>
+                {isLoggedIn ? (
+                    <Button type={'button'} variant={'unstyled'} onClick={() => logout()}>
                         Sign Out
                     </Button>
                 ) : (
-                    <Button as={Link} to={'/sign_in'}>
+                    <Button as={Link} to={'/signin'} type={'button'} variant={'unstyled'}>
                         Sign In
                     </Button>
                 )}

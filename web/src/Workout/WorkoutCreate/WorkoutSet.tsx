@@ -1,6 +1,6 @@
 import { Control, useFieldArray, UseFormRegister } from 'react-hook-form';
-import { Button, InputGroup, InputRightElement, NumberInput, NumberInputField, Stack } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons';
+import { Button, InputGroup, InputRightElement, NumberInput, NumberInputField, Stack } from '@chakra-ui/react';
 import { FormValues } from '.';
 
 interface IProps {
@@ -10,7 +10,10 @@ interface IProps {
 }
 
 export function WorkoutSet({ nestIndex, control, register }: IProps) {
-    const { fields, remove, append } = useFieldArray({ control, name: `workoutItems.${nestIndex}.sets` as const });
+    const { fields, remove, append } = useFieldArray({
+        control,
+        name: `workoutItems.${nestIndex}.sets` as const,
+    });
 
     return (
         <Stack spacing={4} w={'100%'}>
@@ -18,14 +21,28 @@ export function WorkoutSet({ nestIndex, control, register }: IProps) {
                 <Stack key={item.id} direction={'row'} w={'100%'}>
                     <NumberInput size={'lg'} w={'100%'}>
                         <InputGroup size={'lg'}>
-                            <NumberInputField color={'gray.400'} {...register(`workoutItems.${nestIndex}.sets.${k}.reps` as const)} />
-                            <InputRightElement children={'reps'} color={'gray.400'} paddingRight={4} />
+                            <NumberInputField
+                                color={'gray.400'}
+                                {...register(`workoutItems.${nestIndex}.sets.${k}.reps` as const)}
+                            />
+                            <InputRightElement
+                                children={'reps'}
+                                color={'gray.400'}
+                                paddingRight={4}
+                            />
                         </InputGroup>
                     </NumberInput>
                     <NumberInput size={'lg'} w={'100%'}>
                         <InputGroup size={'lg'}>
-                            <NumberInputField color={'gray.400'} {...register(`workoutItems.${nestIndex}.sets.${k}.weight` as const)} />
-                            <InputRightElement children={'lbs'} color={'gray.400'} paddingRight={4} />
+                            <NumberInputField
+                                color={'gray.400'}
+                                {...register(`workoutItems.${nestIndex}.sets.${k}.weight` as const)}
+                            />
+                            <InputRightElement
+                                children={'lbs'}
+                                color={'gray.400'}
+                                paddingRight={4}
+                            />
                         </InputGroup>
                     </NumberInput>
                     <Button type={'button'} size={'lg'} bg={'none'} onClick={() => remove(k)}>

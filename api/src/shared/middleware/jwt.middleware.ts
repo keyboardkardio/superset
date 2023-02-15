@@ -27,6 +27,7 @@ export function authenticate(request: CustomRequest, response: Response, next: N
 }
 
 export function authorize(role: Role) {
+    
     return (request: CustomRequest, response: Response, next: NextFunction) => {
         if (request.user?.role !== role) {
             return response.status(401).json({ error: 'Unauthorized: Insufficient role.' });

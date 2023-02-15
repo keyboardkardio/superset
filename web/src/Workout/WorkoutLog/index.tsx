@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
 import { Card, Heading, Stack, Text } from '@chakra-ui/react';
+import { useFetch } from '../../shared/hooks/useFetch';
 
 const baseUrl = process.env.REACT_APP_DB_URL as string;
 
 interface WorkoutItem {
     id: string;
-    exercise: {
-        name: string;
-    };
+    exercise: { name: string };
     sets: {
         id: string;
         reps: number;
@@ -15,43 +13,28 @@ interface WorkoutItem {
     }[];
 }
 
-export default function WorkoutLog() {
-    const [workout, setWorkout] = useState<any>();
+export interface WorkoutResponse {
+    id: string;
+    date: Date | string;
+    workoutItems: WorkoutItem[];
+}
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch(`${baseUrl}/workouts`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-            });
-            const data = await response.json();
-            setWorkout(data);
-        };
-        fetchData();
-    }, []);
+export function WorkoutLog() {
+    const { data, error } = useFetch<WorkoutResponse[]>(`${baseUrl}/workouts/log`);
 
     return (
         <Stack>
             <Heading color={'green.500'}>Workout Log</Heading>
-            {workout?.map((workout: any) => (
-                <Card
-                    key={workout.id}
-                    padding={'1rem'}
-                    variant={'outline'}
-                    backdropFilter={'auto'}
-                    backdropBlur={'sm'}
-                    backgroundColor={'rgba(255, 255, 255, 0.1)'}
-                >
+            {data?.map((workout: any) => (
+                <Card key={workout.id}>
                     <Stack>
                         {workout.workoutItems.map((workoutItem: WorkoutItem) => (
                             <div key={workoutItem.id}>
                                 <Heading
-                                    color={'whiteAlpha.900'}
                                     size={'sm'}
-                                    textTransform={'capitalize'}
                                     borderBottom={'1px'}
+                                    color={'whiteAlpha.900'}
+                                    textTransform={'capitalize'}
                                 >
                                     {workoutItem.exercise.name}
                                 </Heading>

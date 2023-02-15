@@ -2,7 +2,7 @@ import React from 'react';
 import { Box } from '@chakra-ui/react';
 import barbell from '../../assets/images/barbell.jpg';
 
-export default function AppContainer({ children }: { children: React.ReactNode }) {
+export function AppContainer({ children }: { children: React.ReactNode }) {
     return (
         <Box
             bgImg={`linear-gradient(rgba(22, 22, 22, 0.702),
@@ -11,8 +11,9 @@ export default function AppContainer({ children }: { children: React.ReactNode }
             bgSize={'cover'}
             display={'flex'}
             flexDirection={'column'}
-            justifyContent={'space-between'}
             minHeight={'100vh'}
+            justifyContent={'space-between'}
+            padding={'4rem 1rem'}
         >
             {children}
         </Box>

@@ -5,10 +5,11 @@ import { Button } from '@chakra-ui/react';
 interface IProps {
     to: string;
     color?: string;
+    onClick?: string;
     children: React.ReactNode;
 }
 
-export function PrimaryButton(props: IProps) {
+export function LinkButton(props: IProps) {
     return (
         <Button
             as={Link}

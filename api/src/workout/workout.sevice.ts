@@ -67,33 +67,33 @@ export async function deleteWorkout(id: string) {
 }
 
 export async function findAllWorkouts(userId: string) {
-    const workouts = await prisma.workout.findMany({
-        where: { userId },
+    const workouts = await prisma.user.findUnique({
+        where: { id: userId },
         select: {
-            id: true,
-            date: true,
-            workoutItems: {
+            workouts: {
                 select: {
                     id: true,
-                    exercise: {
-                        select: {
-                            name: true,
-                        },
-                    },
-                    sets: {
+                    date: true,
+                    workoutItems: {
                         select: {
                             id: true,
-                            reps: true,
-                            weight: true,
-                        },
-                    },
-                },
-            },
+                            exercise: {
+                                select: {
+                                    name: true,
+                                },
+                            },
+                            sets: {
+                                select: {
+                                    id: true,
+                                    reps: true,
+                                    weight: true,
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
-        orderBy: {
-            date: 'desc'
-        },
-        take: 1,
     });
 
     return workouts;
@@ -108,33 +108,14 @@ export async function findById(id: string): Promise<Partial<Workout> | null> {
     return workout;
 }
 
+/*
+ * See https://www.prisma.io/docs/guides/performance-and-optimization/query-optimization-performance
+ * to optimize database queries */
 export async function findLastWorkout(userId: string) {
     const workout = await prisma.workout.findMany({
         where: { userId },
-        select: {
-            id: true,
-            date: true,
-            workoutItems: {
-                select: {
-                    id: true,
-                    exercise: {
-                        select: {
-                            name: true,
-                        },
-                    },
-                    sets: {
-                        select: {
-                            id: true,
-                            reps: true,
-                            weight: true,
-                        },
-                    },
-                },
-            },
-        },
-        orderBy: {
-            date: 'desc'
-        },
+        select: getWorkoutSelection(),
+        orderBy: { date: 'desc' },
         take: 1,
     });
 
@@ -144,13 +125,9 @@ export async function findLastWorkout(userId: string) {
 export const getWorkoutSelection = () => ({
     id: true,
     date: true,
-    user: {
-        select: {
-            username: true,
-        },
-    },
     workoutItems: {
         select: {
+            id: true,
             exercise: {
                 select: {
                     name: true,
@@ -158,6 +135,7 @@ export const getWorkoutSelection = () => ({
             },
             sets: {
                 select: {
+                    id: true,
                     reps: true,
                     weight: true,
                 },

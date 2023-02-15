@@ -1,8 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button, Heading, Stack } from '@chakra-ui/react';
+import { usePost } from '../../shared/hooks/usePost';
 import * as D from '../../utils/date';
-import WorkoutItem from './WorkoutItem';
+import { WorkoutItem } from './WorkoutItem';
 
 const baseUrl = process.env.REACT_APP_DB_URL as string;
 
@@ -21,31 +22,18 @@ const defaultValues: FormValues = {
     }],
 };
 
-export default function WorkoutCreate() {
+export function WorkoutCreate() {
+    const { control, getValues, handleSubmit, register, reset, setValue, formState: { errors }} = useForm({
+        defaultValues,
+    });
     const navigate = useNavigate();
-    const {
-        control,
-        getValues,
-        handleSubmit,
-        register,
-        reset,
-        setValue,
-        formState: { errors },
-    } = useForm({ defaultValues });
+    const [post, response] = usePost(`${baseUrl}/workouts`);
 
     const onSubmit = async (data: FormValues) => {
         try {
-            const response = await fetch(`${baseUrl}/workouts`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(data),
-            });
-            if (response.status === 201) {
-                navigate('/dashboard');
-            }
+            await post({ body: data });
+            reset();
+            navigate('/');
         } catch (error) {
             console.log(error);
         }
