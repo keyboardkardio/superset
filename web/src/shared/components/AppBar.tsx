@@ -5,7 +5,7 @@ import { Box, Button, Heading, HStack, Menu, MenuButton, MenuItem, MenuList } fr
 import { AuthContext } from '../AuthContext';
 
 export function AppBar() {
-    const { isLoggedIn, logout } = useContext(AuthContext);
+    const { user, logout } = useContext(AuthContext);
 
     return (
         <Box
@@ -34,7 +34,7 @@ export function AppBar() {
                     </MenuList>
                 </Menu>
                 <Heading>SuperSet</Heading>
-                {isLoggedIn ? (
+                {user ? (
                     <Button type={'button'} variant={'unstyled'} onClick={() => logout()}>
                         Sign Out
                     </Button>
