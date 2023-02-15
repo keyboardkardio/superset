@@ -1,17 +1,17 @@
 import { Control, useFieldArray, UseFormRegister } from 'react-hook-form';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Button, Select, Stack } from '@chakra-ui/react';
-import { FormValues } from '.';
-import { IExercise } from '../../Exercise';
+import { WorkoutFormValues } from '.';
 import { Card } from '../../shared/components/Card';
 import { useFetch } from '../../shared/hooks/useFetch';
+import { IExercise } from '../../types';
 import { WorkoutSet } from './WorkoutSet';
 
 const baseUrl = process.env.REACT_APP_DB_URL as string;
 
 interface IProps {
-    control: Control<FormValues>;
-    register: UseFormRegister<FormValues>;
+    control: Control<WorkoutFormValues>;
+    register: UseFormRegister<WorkoutFormValues>;
 }
 
 export function WorkoutItem({ control, register }: IProps) {

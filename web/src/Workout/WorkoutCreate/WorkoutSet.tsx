@@ -1,12 +1,12 @@
 import { Control, useFieldArray, UseFormRegister } from 'react-hook-form';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { Button, InputGroup, InputRightElement, NumberInput, NumberInputField, Stack } from '@chakra-ui/react';
-import { FormValues } from '.';
+import { WorkoutFormValues } from '.';
 
 interface IProps {
     nestIndex: number;
-    control: Control<FormValues>;
-    register: UseFormRegister<FormValues>;
+    control: Control<WorkoutFormValues>;
+    register: UseFormRegister<WorkoutFormValues>;
 }
 
 export function WorkoutSet({ nestIndex, control, register }: IProps) {

@@ -4,7 +4,7 @@ import { useFetch } from '../../shared/hooks/useFetch';
 
 const baseUrl = process.env.REACT_APP_DB_URL as string;
 
-interface WorkoutItem {
+export interface WorkoutItemResponse {
     id: string;
     exercise: { name: string };
     sets: {
@@ -14,10 +14,10 @@ interface WorkoutItem {
     }[];
 }
 
-interface WorkoutResponse {
+export interface WorkoutResponse {
     id: string;
     date: Date | string;
-    workoutItems: WorkoutItem[];
+    workoutItems: WorkoutItemResponse[];
 }
 
 export function Dashboard() {
@@ -28,7 +28,7 @@ export function Dashboard() {
             <Heading color={'green.500'}>Last Workout</Heading>
             <Card key={data?.id}>
                 <Stack>
-                    {data?.workoutItems.map((workoutItem: WorkoutItem) => (
+                    {data?.workoutItems.map((workoutItem: WorkoutItemResponse) => (
                         <div key={workoutItem.id}>
                             <Heading
                                 color={'whiteAlpha.900'}

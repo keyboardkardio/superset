@@ -1,23 +1,8 @@
 import { Card, Heading, Stack, Text } from '@chakra-ui/react';
 import { useFetch } from '../../shared/hooks/useFetch';
+import { WorkoutItemResponse, WorkoutResponse } from '../../User/Dashboard';
 
 const baseUrl = process.env.REACT_APP_DB_URL as string;
-
-interface WorkoutItem {
-    id: string;
-    exercise: { name: string };
-    sets: {
-        id: string;
-        reps: number;
-        weight: number;
-    }[];
-}
-
-export interface WorkoutResponse {
-    id: string;
-    date: Date | string;
-    workoutItems: WorkoutItem[];
-}
 
 export function WorkoutLog() {
     const { data, error } = useFetch<WorkoutResponse[]>(`${baseUrl}/workouts/log`);
@@ -28,7 +13,7 @@ export function WorkoutLog() {
             {data?.map((workout: any) => (
                 <Card key={workout.id}>
                     <Stack>
-                        {workout.workoutItems.map((workoutItem: WorkoutItem) => (
+                        {workout.workoutItems.map((workoutItem: WorkoutItemResponse) => (
                             <div key={workoutItem.id}>
                                 <Heading
                                     size={'sm'}

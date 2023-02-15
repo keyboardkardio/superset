@@ -7,15 +7,14 @@ import { WorkoutItem } from './WorkoutItem';
 
 const baseUrl = process.env.REACT_APP_DB_URL as string;
 
-export interface FormValues {
-    userId?: string;
+export interface WorkoutFormValues {
     workoutItems: {
         exerciseId: number;
         sets: { reps: number; weight: number }[];
     }[];
 }
 
-const defaultValues: FormValues = {
+const defaultValues: WorkoutFormValues = {
     workoutItems: [{
         exerciseId: 0,
         sets: [{ reps: 0, weight: 0 }],
@@ -23,13 +22,13 @@ const defaultValues: FormValues = {
 };
 
 export function WorkoutCreate() {
-    const { control, getValues, handleSubmit, register, reset, setValue, formState: { errors }} = useForm({
+    const { control, getValues, handleSubmit, register, reset, setValue, formState: { errors } } = useForm({
         defaultValues,
     });
     const navigate = useNavigate();
     const [post, response] = usePost(`${baseUrl}/workouts`);
 
-    const onSubmit = async (data: FormValues) => {
+    const onSubmit = async (data: WorkoutFormValues) => {
         try {
             await post({ body: data });
             reset();
