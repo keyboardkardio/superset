@@ -9,11 +9,12 @@ export async function loginUser(username: string, password: string) {
     if (!(user && (await bcrypt.compare(password, user.password)))) {
         throw new Error('Invalid credentials.');
     }
-    
-    const token = generateTokenFor(user);
-    const userObject = sanitize(user, ['password']);
 
-    return { userObject, token };
+    const token = generateTokenFor(user);
+
+    const appUser = sanitize(user, ['password']);
+    
+    return {appUser, token};
 }
 
 export async function createNewUser(username: string, password: string) {

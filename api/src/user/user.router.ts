@@ -36,8 +36,8 @@ userRouter.post('/login', async (request: Request, response: Response) => {
     }
 
     try {
-        const token = await authService.loginUser(username, password);
-        response.status(200).json({ token });
+        const appUser = await authService.loginUser(username, password);
+        response.status(200).json(appUser);
     } catch (error: any) {
         response.status(500).json({ error: error.message });
     }

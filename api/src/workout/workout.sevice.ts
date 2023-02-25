@@ -56,11 +56,12 @@ export async function createWorkoutItemWithSets(
 }
 
 export async function deleteWorkout(id: string) {
-    const workout = await prisma.workout.findUnique({ where: { id } });
+    const workout = await prisma.workout.findUnique({
+        where: { id },
+    });
     if (!workout) {
         return null;
     }
-
     await prisma.workout.delete({ where: workout });
 
     return;
@@ -68,7 +69,7 @@ export async function deleteWorkout(id: string) {
 
 export async function findAllWorkouts(userId: string) {
     const workouts = await prisma.workout.findMany({
-        where: { id: userId },
+        where: { userId },
         select: getWorkoutSelection(),
     });
 
@@ -84,34 +85,12 @@ export async function findById(id: string): Promise<Partial<Workout> | null> {
     return workout;
 }
 
-/*
- * See https://www.prisma.io/docs/guides/performance-and-optimization/query-optimization-performance
- * to optimize database queries */
 export async function findLastWorkout(userId: string) {
     const workout = await prisma.workout.findMany({
         where: { userId },
-        select: {
-            id: true,
-            date: true,
-            workoutItems: {
-                select: {
-                    id: true,
-                    exercise: {
-                        select: {
-                            name: true,
-                        },
-                    },
-                    sets: {
-                        select: {
-                            id: true,
-                            reps: true,
-                            weight: true,
-                        },
-                    },
-                },
-                take: 1
-            },
-        },
+        select: getWorkoutSelection(),
+        orderBy: { date: 'desc' },
+        take: 1,
     });
 
     return workout;
@@ -120,21 +99,13 @@ export async function findLastWorkout(userId: string) {
 export const getWorkoutSelection = () => ({
     id: true,
     date: true,
+    user: { select: { username: true } },
     workoutItems: {
         select: {
             id: true,
-            exercise: {
-                select: {
-                    name: true,
-                },
-            },
-            sets: {
-                select: {
-                    id: true,
-                    reps: true,
-                    weight: true,
-                },
-            },
+            workoutId: true,
+            exercise: { select: { name: true } },
+            sets: true,
         },
     },
 });
