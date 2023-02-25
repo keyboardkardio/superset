@@ -1,11 +1,10 @@
-import { Heading } from '@chakra-ui/react';
-import SignUpForm from './SignUpForm';
+import { Flex } from '@chakra-ui/react';
+import { SignUpForm } from './SignUpForm';
 
-export default function SignUp() {
+export function SignUp() {
     return (
-        <>
-            <Heading size='4xl' textAlign='right' color='green.600'>Sign Up</Heading>
+        <Flex direction={'column'} justifyContent={'space-between'} minHeight={'80vh'}>
             <SignUpForm />
-        </>
+        </Flex>
     );
 }

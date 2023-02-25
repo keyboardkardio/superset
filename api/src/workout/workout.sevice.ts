@@ -1,31 +1,53 @@
-import { Prisma, Workout } from '@prisma/client';
-import { prisma } from '#shared/services/prisma.service';
+import { Workout } from '@prisma/client';
+import { prisma } from '../shared/services/prisma.service';
 
-export async function createWorkout(userId: string): Promise<string> {
-    const workout = await prisma.workout.create({ data: { user: { connect: { id: userId } } } });
+export async function createWorkout(userId: string) {
+    const workout = await prisma.workout.create({
+        data: { userId },
+    });
 
     return workout.id;
 }
 
-export async function createWorkoutItem(data: Prisma.WorkoutItemCreateInput): Promise<string> {
-    const workoutItem = await prisma.workoutItem.create({ data });
+export async function createWorkoutItem(workoutId: string, exerciseId: number) {
+    const workoutItem = await prisma.workoutItem.create({
+        data: {
+            workoutId,
+            exerciseId: parseInt(exerciseId as unknown as string, 10),
+        },
+    });
 
     return workoutItem.id;
 }
 
-export async function createSet(data: Prisma.SetCreateInput): Promise<string> {
-    const set = await prisma.set.create({ data });
+export async function createSet(workoutItemId: string, reps: number, weight: number) {
+    const set = await prisma.set.create({
+        data: {
+            workoutItemId,
+            reps: parseInt(reps as unknown as string, 10),
+            weight: parseInt(weight as unknown as string, 10),
+        },
+    });
 
     return set.id;
 }
 
-export async function createWorkoutItemWithSets(workoutId: string, exerciseId: number, sets: Prisma.SetCreateManyWorkoutItemInput[]) {
+export async function createWorkoutItemWithSets(
+    workoutId: string,
+    exerciseId: number,
+    sets: { reps: number; weight: number }[],
+) {
     const workoutItem = await prisma.workoutItem.create({
         data: {
             workoutId,
-            exerciseId,
+            exerciseId: parseInt(exerciseId as unknown as string, 10),
             sets: {
-                create: sets.map((set) => ({ data: set })),
+                createMany: {
+                    data: sets.map((set) => ({
+                        reps: parseInt(set.reps as unknown as string, 10),
+                        weight: parseInt(set.weight as unknown as string, 10),
+                    })),
+                },
             },
         },
     });
@@ -34,18 +56,20 @@ export async function createWorkoutItemWithSets(workoutId: string, exerciseId: n
 }
 
 export async function deleteWorkout(id: string) {
-    const workout = await prisma.workout.findUnique({ where: { id } });
+    const workout = await prisma.workout.findUnique({
+        where: { id },
+    });
     if (!workout) {
         return null;
     }
-
     await prisma.workout.delete({ where: workout });
 
     return;
 }
 
-export async function findAllWorkouts(): Promise<Partial<Workout>[]> {
+export async function findAllWorkouts(userId: string) {
     const workouts = await prisma.workout.findMany({
+        where: { userId },
         select: getWorkoutSelection(),
     });
 
@@ -61,27 +85,27 @@ export async function findById(id: string): Promise<Partial<Workout> | null> {
     return workout;
 }
 
+export async function findLastWorkout(userId: string) {
+    const workout = await prisma.workout.findMany({
+        where: { userId },
+        select: getWorkoutSelection(),
+        orderBy: { date: 'desc' },
+        take: 1,
+    });
+
+    return workout;
+}
+
 export const getWorkoutSelection = () => ({
     id: true,
     date: true,
-    user: {
-        select: {
-            username: true,
-        },
-    },
+    user: { select: { username: true } },
     workoutItems: {
         select: {
-            exercise: {
-                select: {
-                    name: true,
-                },
-            },
-            sets: {
-                select: {
-                    reps: true,
-                    weight: true,
-                },
-            },
+            id: true,
+            workoutId: true,
+            exercise: { select: { name: true } },
+            sets: true,
         },
     },
 });

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import HttpException from '#shared/http-exception';
+import HttpException from '../../shared/http-exception';
 
 /** A middleware function that handles HTTP request errors. */
 

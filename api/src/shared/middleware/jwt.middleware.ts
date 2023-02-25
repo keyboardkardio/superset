@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Role } from '@prisma/client';
-import { getTokenFrom } from '#/auth/token.service';
+import { getTokenFrom } from '../../auth/token.service';
 
 const SECRET = process.env.JWT_SECRET as string;
 
@@ -27,6 +27,7 @@ export function authenticate(request: CustomRequest, response: Response, next: N
 }
 
 export function authorize(role: Role) {
+    
     return (request: CustomRequest, response: Response, next: NextFunction) => {
         if (request.user?.role !== role) {
             return response.status(401).json({ error: 'Unauthorized: Insufficient role.' });

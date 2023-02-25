@@ -1,61 +1,56 @@
+import { useContext } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { Button, Input, Link, Stack } from '@chakra-ui/react';
-import storage from '@/utils/storage';
+import { AuthContext } from '../../shared/AuthContext';
 
 export interface SignInFormValues {
     username: string;
     password: string;
 }
 
-export default function SignInForm() {
-    const navigate = useNavigate();
+export function SignInForm() {
     const { register, handleSubmit } = useForm<SignInFormValues>();
-    const handleLogin = async (form: SignInFormValues) => {
-        try {
-            const response = await fetch('http://localhost:7000/api/users/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(form),
-            });
-            const data = await response.json();
-            if (data.token) {
-                storage.setToken(data.token);
-                const { user, workouts } = data;
-                navigate('/dashboard', { state: { user, workouts } });
-            } else {
-                console.error(data.message);
-            }
-        } catch (error) {
-            console.log(error);
-        }
+    const { login } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const onSubmit = async (formValues: SignInFormValues) => {
+        await login(formValues);
+        navigate('/dashboard');
     };
 
     return (
-        <form onSubmit={handleSubmit(handleLogin)}>
-            <Stack spacing={4}>
-                <Input
-                    size={'lg'}
-                    color={'gray.400'}
-                    placeholder={'Username'}
-                    {...register('username')}
-                />
-                <Input
-                    type={'password'}
-                    size={'lg'}
-                    color={'gray.400'}
-                    placeholder={'Password'}
-                    {...register('password')}
-                />
-                <Link as={RouterLink} to={'/sign_up'} color={'gray.400'} textAlign={'center'}>
-                    Don't have an account?
-                </Link>
-                <Button type={'submit'} size={'lg'} bgColor={'green.400'}>
-                    Sign In
-                </Button>
-            </Stack>
-        </form>
+        <>
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <Stack>
+                    <Input
+                        type={'text'}
+                        size={'lg'}
+                        color={'gray.400'}
+                        placeholder={'Username'}
+                        backdropFilter={'auto'}
+                        backdropBlur={'sm'}
+                        backgroundColor={'rgba(171, 171, 171, 0.15)'}
+                        {...register('username')}
+                    />
+                    <Input
+                        type={'password'}
+                        size={'lg'}
+                        color={'gray.400'}
+                        placeholder={'Password'}
+                        backdropFilter={'auto'}
+                        backdropBlur={'sm'}
+                        backgroundColor={'rgba(171, 171, 171, 0.15)'}
+                        {...register('password')}
+                    />
+                    <Link as={RouterLink} to={'/signup'} color={'gray.400'} textAlign={'center'}>
+                        Don't have an account?
+                    </Link>
+                    <Button type={'submit'} size={'lg'} bgColor={'green.400'}>
+                        Sign In
+                    </Button>
+                </Stack>
+            </form>
+        </>
     );
 }

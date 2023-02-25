@@ -1,17 +1,25 @@
 import { Request, Response, Router } from 'express';
-import * as authService from '#/auth/auth.service';
+import * as authService from '../auth/auth.service';
 
 export const userRouter = Router();
 
 userRouter.post('/register', async (request: Request, response: Response) => {
     const { username, password, passwordConfirmation } = request.body;
+    if (!username) {
+        response.status(400).json({ error: 'Username is required.' });
+    }
+    if (!password) {
+        response.status(400).json({ error: 'Password is required.' });
+    }
+    if (!passwordConfirmation) {
+        response.status(400).json({ error: 'Please confirm your password.' });
+    }
     if (password !== passwordConfirmation) {
         response.status(400).json({ error: 'Passwords do not match.' });
     }
 
     try {
-       const user = await authService.createNewUser(username, password)
-
+        const user = await authService.createNewUser(username, password);
         response.status(201).json(user);
     } catch (error: any) {
         response.status(500).json({ error: error.message });
@@ -20,12 +28,16 @@ userRouter.post('/register', async (request: Request, response: Response) => {
 
 userRouter.post('/login', async (request: Request, response: Response) => {
     const { username, password } = request.body;
-    
-    try {
-        /** Include the user and their saved workouts in the response to avoid another request-response cycle. */
-        const userWithWorkoutsAndToken = await authService.loginUser(username, password);
+    if (!username) {
+        response.status(400).json({ error: 'Username is required.' });
+    }
+    if (!password) {
+        response.status(400).json({ error: 'Password is required.' });
+    }
 
-        response.status(200).json(userWithWorkoutsAndToken);
+    try {
+        const appUser = await authService.loginUser(username, password);
+        response.status(200).json(appUser);
     } catch (error: any) {
         response.status(500).json({ error: error.message });
     }

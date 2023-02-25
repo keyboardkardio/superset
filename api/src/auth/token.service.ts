@@ -23,6 +23,10 @@ export function generateTokenFor(params: JwtPayload): string {
 export function getTokenFrom(request: Request): string | null {
     const valueInAuthHeader = request.headers.authorization;
 
+    if (!valueInAuthHeader) {
+        throw new Error('Unauthorized: Missing token.');
+    }
+
     if (valueInAuthHeader && valueInAuthHeader.startsWith('Bearer ')) {
         return valueInAuthHeader.replace('Bearer ', '');
     }
@@ -30,7 +34,7 @@ export function getTokenFrom(request: Request): string | null {
     return null;
 }
 
-export function getUserIdFrom(token: string) {
+export function getUserIdFrom(token: string): string {
     const decodedToken = jwt.verify(token, SECRET) as JwtPayload;
 
     return decodedToken.id;
