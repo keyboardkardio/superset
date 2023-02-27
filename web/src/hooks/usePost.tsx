@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+const baseUrl = process.env.REACT_APP_DB_URL;
+
 interface RequestOptions {
     body?: Record<string, any>;
     headers?: Record<string, string>;
@@ -24,7 +26,7 @@ export function usePost<T>(url: string) {
         const isUrlAuth = url.endsWith('login' || 'register');
         try {
             setResponse({ data: null, error: null, status: '', isLoading: true });
-            const response = await fetch(process.env.REACT_APP_DB_URL!.concat(url), {
+            const response = await fetch(`${baseUrl}/${url}`, {
                 method: 'POST',
                 headers: isUrlAuth
                     ? { 'Content-Type': 'application/json' }
