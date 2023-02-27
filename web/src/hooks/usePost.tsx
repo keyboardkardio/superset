@@ -24,7 +24,7 @@ export function usePost<T>(url: string) {
         const isUrlAuth = url.endsWith('login' || 'register');
         try {
             setResponse({ data: null, error: null, status: '', isLoading: true });
-            const response = await fetch(url, {
+            const response = await fetch(process.env.REACT_APP_DB_URL!.concat(url), {
                 method: 'POST',
                 headers: isUrlAuth
                     ? { 'Content-Type': 'application/json' }

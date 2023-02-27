@@ -1,12 +1,10 @@
 import { Control, Controller, useFieldArray, UseFormRegister } from 'react-hook-form';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button, FormControl, InputLabel, MenuItem, Select, Stack } from '@mui/material';
+import { Button, FormControl, InputLabel, MenuItem, Paper, Select, Stack } from '@mui/material';
 import { useFetch } from '../../../../hooks/useFetch';
 import { IExercise } from '../../../../types';
 import { WorkoutFormValues } from './WorkoutForm';
 import { WorkoutSetForm } from './WorkoutSetForm';
-
-const baseUrl = process.env.REACT_APP_DB_URL as string;
 
 interface IProps {
     control: Control<WorkoutFormValues>;
@@ -15,13 +13,13 @@ interface IProps {
 
 export function WorkoutItemForm({ control, register }: IProps) {
     const { fields, append, remove } = useFieldArray({ control, name: 'workoutItems' });
-    const { data, error } = useFetch<IExercise[]>(`${baseUrl}/exercises`);
+    const { data, error } = useFetch<IExercise[]>('exercises');
 
     return (
         <>
             {fields.map((item, index) => (
-                <Stack key={item.id}>
-                    <Stack spacing={2}>
+                <Paper key={item.id}>
+                    <Stack spacing={2} padding={'1rem'}>
                         <Stack direction={'row'}>
                             <Controller
                                 name={`workoutItems.${index}.exerciseId`}
@@ -44,18 +42,19 @@ export function WorkoutItemForm({ control, register }: IProps) {
                                     </FormControl>
                                 )}
                             />
-                            <Button onClick={() => remove(index)}>
-                                <DeleteIcon />
+                            <Button type={'button'} onClick={() => remove(index)}>
+                                <DeleteIcon fontSize={'large'} color={'error'} />
                             </Button>
                         </Stack>
                         <WorkoutSetForm nestIndex={index} {...{ control, register }} />
                     </Stack>
-                </Stack>
+                </Paper>
             ))}
             <Button
                 type={'button'}
                 variant={'contained'}
                 size={'large'}
+                color={'info'}
                 onClick={() => {
                     append({ exerciseId: 0, sets: [{ reps: 0, weight: 0 }] });
                 }}

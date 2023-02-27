@@ -32,7 +32,7 @@ export function WorkoutSetForm({ nestIndex, control, register }: IProps) {
                         />
                     </Stack>
                     <Button type={'button'} onClick={() => remove(k)}>
-                        <DeleteIcon />
+                        <DeleteIcon fontSize={'large'} color={'error'} />
                     </Button>
                 </Stack>
             ))}

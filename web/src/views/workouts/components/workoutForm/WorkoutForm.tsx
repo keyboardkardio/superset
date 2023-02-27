@@ -4,8 +4,6 @@ import { Button, Stack, Typography } from '@mui/material';
 import { usePost } from '../../../../hooks/usePost';
 import { WorkoutItemForm } from './WorkoutItemForm';
 
-const baseUrl = process.env.REACT_APP_DB_URL as string;
-
 export interface WorkoutFormValues {
     workoutItems: {
         exerciseId: number;
@@ -15,7 +13,7 @@ export interface WorkoutFormValues {
 
 const defaultValues: WorkoutFormValues = {
     workoutItems: [{
-        exerciseId: 1,
+        exerciseId: 0,
         sets: [{ reps: 0, weight: 0 }],
     }],
 };
@@ -24,14 +22,14 @@ export function WorkoutForm() {
     const { control, getValues, handleSubmit, register, reset, setValue, formState: { errors } } = useForm({
         defaultValues,
     });
-    
+
     const navigate = useNavigate();
-    const [post, response] = usePost(`${baseUrl}/workouts`);
+    const [post, response] = usePost('workouts');
     const onSubmit = async (data: WorkoutFormValues) => {
         try {
             await post({ body: data });
-            reset();
             if (response.status == 200) {
+                reset();
                 navigate('/');
             }
         } catch (error) {
@@ -40,7 +38,7 @@ export function WorkoutForm() {
     };
 
     return (
-        <Stack spacing={4}>
+        <Stack spacing={4} paddingBottom={'2rem'}>
             <Stack alignItems={'flex-end'} paddingRight={'1rem'}>
                 <Typography variant={'h1'}>
                     {new Date().toLocaleString('en-US', { weekday: 'long' })}
@@ -54,23 +52,31 @@ export function WorkoutForm() {
                 </Typography>
             </Stack>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <Stack spacing={8}>
-                    <WorkoutItemForm
-                        {...{ control, register, defaultValues, getValues, setValue, errors }}
-                    />
-                    <Button type={'submit'} variant={'contained'} size={'large'}>
-                        Finish Session
-                    </Button>
+                <Stack spacing={4}>
+                    <WorkoutItemForm {...{ control, register, defaultValues, getValues, setValue, errors }} />
+                    <Stack direction={'row'} spacing={2}>
+                        <Button
+                            fullWidth
+                            type={'button'}
+                            variant={'contained'}
+                            size={'large'}
+                            color={'error'}
+                            onClick={() => reset(defaultValues)}
+                        >
+                            Reset Log
+                        </Button>
+                        <Button
+                            fullWidth
+                            type={'submit'}
+                            variant={'contained'}
+                            size={'large'}
+                            color={'success'}
+                        >
+                            Finish Session
+                        </Button>
+                    </Stack>
                 </Stack>
             </form>
-            <Button
-                type={'button'}
-                variant={'contained'}
-                size={'large'}
-                onClick={() => reset(defaultValues)}
-            >
-                Reset Log
-            </Button>
         </Stack>
     );
 }

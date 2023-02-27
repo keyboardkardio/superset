@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 
+const baseUrl = process.env.REACT_APP_DB_URL;
+
 interface ResponseData<T> {
     data: T | null;
     error: Error | null;
@@ -12,9 +14,9 @@ export function useFetch<T>(url: string): ResponseData<T> {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(url, {
+                const response = await fetch(`${baseUrl}/${url}`, {
                     headers: {
-                        Authorization: `Bearer ${JSON.parse(localStorage.getItem('@superset:token') as string)}`,
+                        Authorization: `Bearer ${localStorage.getItem('@superset:token')}`,
                     },
                 });
                 const data = await response.json();

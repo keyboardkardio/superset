@@ -2,10 +2,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Stack, TextField, Typography } from '@mui/material';
-import { usePost } from '../../hooks/usePost';
 import * as yup from 'yup';
 
-const baseUrl = process.env.REACT_APP_DB_URL as string;
+import { usePost } from '../../hooks/usePost';
 
 export const registrationSchema = yup.object({
     username: yup
@@ -29,11 +28,11 @@ export function Register() {
     });
     
     const navigate = useNavigate();
-    const [post, response] = usePost(`${baseUrl}/users/register`);
+    const [post, response] = usePost('users/register');
     const onSubmit = async (credentials: RegistrationFormValues) => {
         try {
             await post({ body: credentials });
-            if (response.status === 201) {
+            if (response.status == 201) {
                 reset();
                 navigate('/signin');
             }

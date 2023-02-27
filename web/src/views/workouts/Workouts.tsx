@@ -1,7 +1,6 @@
 import { Stack, Typography } from '@mui/material';
+import { AppBar } from '../../components/AppBar';
 import { useFetch } from '../../hooks/useFetch';
-
-const baseUrl = process.env.REACT_APP_DB_URL as string;
 
 export interface WorkoutItemResponse {
     id: string;
@@ -23,16 +22,16 @@ export interface WorkoutResponse {
 }
 
 export function Workouts() {
-    const { data, error } = useFetch<WorkoutResponse[]>(`${baseUrl}/workouts`);
+    const { data, error } = useFetch<WorkoutResponse[]>('workouts');
 
     return (
         <>
-            <Typography variant={'h1'}>Workouts</Typography>
-            <Stack spacing={4} marginTop={'2rem'}>
-                {Array.isArray(data) &&
-                    data?.map((workout: WorkoutResponse) => (
+            <Stack spacing={2}>
+                <Typography variant={'h1'}>Workouts</Typography>
+                <Stack spacing={2}>
+                    {data?.map((workout: WorkoutResponse) => (
                         <Stack key={workout.id} spacing={2}>
-                            <Typography variant={'h2'} borderBottom={'1px solid black'}>
+                            <Typography variant={'h2'} borderBottom={'1px solid #FFFFFC'}>
                                 {new Date(workout.date).toLocaleString('en-US', {
                                     weekday: 'long',
                                     month: 'long',
@@ -46,7 +45,7 @@ export function Workouts() {
                                         {workoutItem.exercise.name}
                                     </Typography>
                                     {workoutItem.sets.map((set) => (
-                                        <Typography key={set.id}>
+                                        <Typography key={set.id} paddingLeft={'2rem'}>
                                             {set.reps} reps x {set.weight} lbs
                                         </Typography>
                                     ))}
@@ -54,7 +53,9 @@ export function Workouts() {
                             ))}
                         </Stack>
                     ))}
+                </Stack>
             </Stack>
+            <AppBar />
         </>
     );
 }

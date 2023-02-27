@@ -1,7 +1,7 @@
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import { AppContainer } from './components/AppContainer';
 import { AuthProvider } from './components/AuthProvider';
 import { RequireAuth } from './components/RequireAuth';
@@ -17,14 +17,15 @@ import '@fontsource/roboto/700.css';
 
 const theme = createTheme({
     palette: {
+        mode: 'dark',
         primary: {
-            main: '#888C81',
+            main: '#FF871F',
         },
         secondary: {
-            main: '#D9C9BA',
+            main: '#FFFFFC',
         },
         text: {
-            primary: '#1a1a1a',
+            primary: '#FFFFFC',
         },
     },
     typography: {
