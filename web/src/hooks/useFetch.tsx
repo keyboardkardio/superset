@@ -14,7 +14,7 @@ export function useFetch<T>(url: string): ResponseData<T> {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${baseUrl}/${url}`, {
+                const response = await fetch(`${baseUrl}${url}`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('@superset:token')}`,
                     },
