@@ -1,81 +1,92 @@
-import { Request, Response, Router } from 'express';
+import express from 'express';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import * as tokenService from '../auth/token.service';
 import * as workoutService from './workout.sevice';
 
-export const workoutRouter = Router();
+export const workoutRouter = express.Router();
 
-workoutRouter.get('/', async (request: Request, response: Response) => {
-    try {
-        const token = tokenService.getTokenFrom(request) as string;
-        const workouts = await workoutService.findAllWorkouts(tokenService.getUserIdFrom(token));
-
-        response.json(workouts);
-    } catch (error: any) {
-        response.status(500).json({ error: error.message });
-    }
-});
-
-workoutRouter.get(`/:id`, async (request: Request, response: Response) => {
-    try {
-        const workout = await workoutService.findById(request.params.id);
-
-        response.json(workout);
-    } catch (error: any) {
-        response.status(500).json({ error: error.message });
-    }
-});
-
-workoutRouter.get('/latest', async (request: Request, response: Response) => {
-    try {
-        const token = tokenService.getTokenFrom(request) as string;
-        const workout = await workoutService.findLastWorkout(tokenService.getUserIdFrom(token));
-        
-        response.json(workout);
-    } catch (error: any) {
-        response.status(500).json({ error: error.message });
-    }
-});
-
-workoutRouter.post('/', async (request: Request, response: Response) => {
-    try {
-        const token = tokenService.getTokenFrom(request) as string;
-        const workoutId = await workoutService.createWorkout(tokenService.getUserIdFrom(token));
-
-        await Promise.all(
-            request.body.workoutItems.map(
-                async (workoutItem: {
-                    exerciseId: number;
-                    sets: { reps: number; weight: number }[];
-                }) => {
-                    await workoutService.createWorkoutItemWithSets(
-                        workoutId,
-                        workoutItem.exerciseId,
-                        workoutItem.sets,
-                    );
-                },
-            ),
-        );
-
-        const workout = await workoutService.findById(workoutId);
-
-        response.status(201).json(workout);
-    } catch (error: any) {
-        if (error instanceof JsonWebTokenError) {
-            response.status(401).json({ error: 'Invalid token' });
+workoutRouter.get(
+    '/',
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        try {
+            const token = tokenService.getTokenFrom(req) as string;
+            const workouts = await workoutService.findAllWorkouts(tokenService.getUserIdFrom(token));
+            res.status(200).json(workouts);
+        } catch (err: any) {
+            next(err);
         }
+    },
+);
 
-        response.status(500).json({ error: error.message });
-    }
-});
+workoutRouter.get(
+    `/:id`,
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        try {
+            const workout = await workoutService.findById(req.params.id);
+            res.status(200).json(workout);
+        } catch (err: any) {
+            next(err);
+        }
+    },
+);
 
-workoutRouter.delete(`/workouts/:id`, async (request: Request, response: Response) => {
-    try {
-        const id = request.params.id;
-        await workoutService.deleteWorkout(id);
+workoutRouter.get(
+    '/latest',
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        try {
+            const token = tokenService.getTokenFrom(req) as string;
+            const workout = await workoutService.findLastWorkout(tokenService.getUserIdFrom(token));
+            res.status(200).json(workout);
+        } catch (err: any) {
+            next(err);
+        }
+    },
+);
 
-        response.status(204).end();
-    } catch (error: any) {
-        response.status(500).json({ error: error.message });
-    }
-});
+workoutRouter.post(
+    '/',
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        try {
+            const token = tokenService.getTokenFrom(req) as string;
+            const workoutId = await workoutService.createWorkout(tokenService.getUserIdFrom(token));
+
+            await Promise.all(
+                req.body.workoutItems.map(
+                    async (workoutItem: {
+                        exerciseId: number;
+                        sets: { reps: number; weight: number }[];
+                    }) => {
+                        await workoutService.createWorkoutItemWithSets(
+                            workoutId,
+                            workoutItem.exerciseId,
+                            workoutItem.sets,
+                        );
+                    },
+                ),
+            );
+
+            const workout = await workoutService.findById(workoutId);
+
+            res.status(201).json(workout);
+        } catch (err: any) {
+            if (err instanceof JsonWebTokenError) {
+                res.status(401).json({ error: 'Invalid token' });
+            }
+            next(err);
+        }
+    },
+);
+
+workoutRouter.delete(
+    `/:id`,
+    async (req: express.Request, res: express.Response, next: express.NextFunction) => {
+        try {
+            const id = req.params.id;
+            await workoutService.deleteWorkout(id);
+
+            res.status(204).end();
+        } catch (err: any) {
+            next(err);
+        }
+    },
+);

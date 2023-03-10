@@ -6,15 +6,13 @@ import { generateTokenFor } from './token.service';
 
 export async function loginUser(username: string, password: string) {
     const user = await prisma.user.findUnique({ where: { username } });
-    if (!(user && (await bcrypt.compare(password, user.password)))) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
         throw new Error('Invalid credentials.');
     }
 
     const token = generateTokenFor(user);
 
-    const appUser = sanitize(user, ['password']);
-    
-    return {appUser, token};
+    return { appUser: sanitize(user, ['password']), token };
 }
 
 export async function createNewUser(username: string, password: string) {

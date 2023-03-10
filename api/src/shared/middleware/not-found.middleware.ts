@@ -1,9 +1,7 @@
-import { Request, Response, NextFunction } from 'express';
+import express from 'express';
 
-/** A middleware function that catches `404` conditions. */
+export function notFoundHandler(req: express.Request, res: express.Response, next: express.NextFunction) {
+    const message = `Resource not found: ${req.method} ${req.url}`;
 
-export const notFoundHandler = (request: Request, response: Response, next: NextFunction) => {
-    const message = 'Resource not found';
-
-    response.status(404).send(message);
+    res.status(404).send(message);
 };

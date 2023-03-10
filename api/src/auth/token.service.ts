@@ -11,27 +11,20 @@ export interface JwtPayload {
 }
 
 export function generateTokenFor(params: JwtPayload): string {
-    const payload = {
-        id: params.id,
-        username: params.username,
-        role: Role.USER,
-    };
+    const { id, username, role } = params;
+    const payload = { id, username, role };
+    const expiresIn = 60 * 60 * 2; // 2 hours
 
-    return jwt.sign(payload, SECRET, { expiresIn: 60 * 60 * 2 });
+    return jwt.sign(payload, SECRET, { expiresIn });
 }
 
 export function getTokenFrom(request: Request): string | null {
     const valueInAuthHeader = request.headers.authorization;
-
-    if (!valueInAuthHeader) {
+    if (!valueInAuthHeader?.startsWith('Bearer ')) {
         throw new Error('Unauthorized: Missing token.');
     }
 
-    if (valueInAuthHeader && valueInAuthHeader.startsWith('Bearer ')) {
-        return valueInAuthHeader.replace('Bearer ', '');
-    }
-
-    return null;
+    return valueInAuthHeader.slice(7);
 }
 
 export function getUserIdFrom(token: string): string {

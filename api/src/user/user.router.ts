@@ -1,44 +1,36 @@
-import { Request, Response, Router } from 'express';
+import express from 'express';
 import * as authService from '../auth/auth.service';
 
-export const userRouter = Router();
+export const userRouter = express.Router();
 
-userRouter.post('/register', async (request: Request, response: Response) => {
-    const { username, password, passwordConfirmation } = request.body;
-    if (!username) {
-        response.status(400).json({ error: 'Username is required.' });
+userRouter.post('/register', async (req: express.Request, res: express.Response) => {
+    const { username, password, passwordConfirmation } = req.body;
+    if (!username || !password || !passwordConfirmation) {
+        res.status(400).json({error: 'Username, password, and password confirmation are required.'});
     }
-    if (!password) {
-        response.status(400).json({ error: 'Password is required.' });
-    }
-    if (!passwordConfirmation) {
-        response.status(400).json({ error: 'Please confirm your password.' });
-    }
+
     if (password !== passwordConfirmation) {
-        response.status(400).json({ error: 'Passwords do not match.' });
+        res.status(400).json({ error: 'Passwords do not match.' });
     }
 
     try {
         const user = await authService.createNewUser(username, password);
-        response.status(201).json(user);
+        res.status(201).json(user);
     } catch (error: any) {
-        response.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });
 
-userRouter.post('/login', async (request: Request, response: Response) => {
-    const { username, password } = request.body;
-    if (!username) {
-        response.status(400).json({ error: 'Username is required.' });
-    }
-    if (!password) {
-        response.status(400).json({ error: 'Password is required.' });
+userRouter.post('/login', async (req: express.Request, res: express.Response) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+        res.status(400).json({ error: 'Username and password are required.' });
     }
 
     try {
         const appUser = await authService.loginUser(username, password);
-        response.status(200).json(appUser);
+        res.status(200).json(appUser);
     } catch (error: any) {
-        response.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message });
     }
 });

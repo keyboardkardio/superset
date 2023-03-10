@@ -1,39 +1,36 @@
-import { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Role } from '@prisma/client';
 import { getTokenFrom } from '../../auth/token.service';
 
-const SECRET = process.env.JWT_SECRET as string;
+const SECRET = process.env.JWT_SECRET || '';
 
-interface CustomRequest extends Request {
+interface CustomRequest extends express.Request {
     user?: JwtPayload;
 }
 
-export function authenticate(request: CustomRequest, response: Response, next: NextFunction) {
-    const token = getTokenFrom(request);
+export function authenticate(req: CustomRequest, res: express.Response, next: express.NextFunction) {
+    const token = getTokenFrom(req);
     if (!token) {
-        return response.status(401).json({ error: 'Unauthorized: No token provided.' });
+        res.status(401).json({ error: 'Unauthorized: No token provided.' });
+        return;
     }
 
     try {
-        const decodedToken = jwt.verify(token, SECRET || '') as JwtPayload;
-        request.user = decodedToken;
+        const decodedToken = jwt.verify(token, SECRET) as JwtPayload;
+        req.user = decodedToken;
         next();
-
-        return;
     } catch (error) {
-        return response.status(401).json({ error: 'Unauthorized: Invalid token.' });
+        res.status(401).json({ error: 'Unauthorized: Invalid token.' });
     }
 }
 
 export function authorize(role: Role) {
-    
-    return (request: CustomRequest, response: Response, next: NextFunction) => {
-        if (request.user?.role !== role) {
-            return response.status(401).json({ error: 'Unauthorized: Insufficient role.' });
+    return (req: CustomRequest, res: express.Response, next: express.NextFunction) => {
+        if (req.user?.role !== role) {
+            res.status(401).json({ error: 'Unauthorized: Insufficient role.' });
+            return;
         }
         next();
-
-        return;
     };
 }

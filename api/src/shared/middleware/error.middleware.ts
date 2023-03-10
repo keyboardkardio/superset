@@ -1,10 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import HttpException from '../../shared/http-exception';
 
-/** A middleware function that handles HTTP request errors. */
-
-export const errorHandler = (error: HttpException, request: Request, response: Response, next: NextFunction) => {
+export function errorHandler(error: HttpException, req: express.Request, res: express.Response, next: express.NextFunction) {
     const status = error.statusCode || error.status || 500;
+    const message = error.message || 'Internal Server Error';
 
-    response.status(status).send(error);
+    res.status(status).json({ error: message });
 };

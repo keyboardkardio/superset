@@ -1,29 +1,30 @@
-import { Request, Response, Router } from 'express';
+import express from 'express';
 import { prisma } from '../shared/services/prisma.service';
 
-export const exerciseRouter = Router();
+export const exerciseRouter = express.Router();
 
-exerciseRouter.get('/', async (request: Request, response: Response) => {
+exerciseRouter.get('/', async (req: express.Request, res: express.Response) => {
     try {
         const exercises = await prisma.exercise.findMany();
-        
-        response.json(exercises);
-    } catch (error: any) {
-        response.json({ error: error.message });
+        res.json(exercises);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to retrieve exercises.' });
     }
 });
 
-exerciseRouter.get(`/:id`, async (request: Request, response: Response) => {
-    const id: number = parseInt(request.params.id);
+exerciseRouter.get(`/:id`, async (req: express.Request, res: express.Response) => {
+    const id = parseInt(req.params.id);
+    if (isNaN(id)) {
+        res.status(400).json({ error: 'Invalid ID.' });
+    }
 
     try {
         const exercise = await prisma.exercise.findUnique({ where: { id } });
         if (!exercise) {
-            response.status(404).json({ error: `Exercise: ${id} does not exist in our database.` });
+            res.status(404).json({ error: `Exercise with id ${id} not found.` });
         }
-
-        response.status(200).json(exercise);
-    } catch (error: any) {
-        response.status(500).json({ error: error.message });
+        res.json(exercise);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to retrieve exercise.' });
     }
 });

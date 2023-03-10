@@ -1,7 +1,7 @@
 import { Workout } from '@prisma/client';
 import { prisma } from '../shared/services/prisma.service';
 
-export async function createWorkout(userId: string) {
+export async function createWorkout(userId: string): Promise<string> {
     const workout = await prisma.workout.create({
         data: { userId },
     });
@@ -9,7 +9,7 @@ export async function createWorkout(userId: string) {
     return workout.id;
 }
 
-export async function createWorkoutItem(workoutId: string, exerciseId: number) {
+export async function createWorkoutItem(workoutId: string, exerciseId: number): Promise<string> {
     const workoutItem = await prisma.workoutItem.create({
         data: {
             workoutId,
@@ -20,7 +20,11 @@ export async function createWorkoutItem(workoutId: string, exerciseId: number) {
     return workoutItem.id;
 }
 
-export async function createSet(workoutItemId: string, reps: number, weight: number) {
+export async function createSet(
+    workoutItemId: string,
+    reps: number,
+    weight: number,
+): Promise<string> {
     const set = await prisma.set.create({
         data: {
             workoutItemId,
@@ -36,7 +40,7 @@ export async function createWorkoutItemWithSets(
     workoutId: string,
     exerciseId: number,
     sets: { reps: number; weight: number }[],
-) {
+): Promise<string> {
     const workoutItem = await prisma.workoutItem.create({
         data: {
             workoutId,
@@ -55,10 +59,8 @@ export async function createWorkoutItemWithSets(
     return workoutItem.id;
 }
 
-export async function deleteWorkout(id: string) {
-    const workout = await prisma.workout.findUnique({
-        where: { id },
-    });
+export async function deleteWorkout(id: string): Promise<void | null> {
+    const workout = await prisma.workout.findUnique({ where: { id } });
     if (!workout) {
         return null;
     }
@@ -67,7 +69,7 @@ export async function deleteWorkout(id: string) {
     return;
 }
 
-export async function findAllWorkouts(userId: string) {
+export async function findAllWorkouts(userId: string): Promise<Partial<Workout>[]> {
     const workouts = await prisma.workout.findMany({
         where: { userId },
         select: getWorkoutSelection(),
@@ -85,18 +87,17 @@ export async function findById(id: string): Promise<Partial<Workout> | null> {
     return workout;
 }
 
-export async function findLastWorkout(userId: string) {
-    const workout = await prisma.workout.findMany({
+export async function findLastWorkout(userId: string): Promise<Partial<Workout> | null> {
+    const workout = await prisma.workout.findFirst({
         where: { userId },
         select: getWorkoutSelection(),
         orderBy: { date: 'desc' },
-        take: 1,
     });
 
-    return workout;
+    return workout || null;
 }
 
-export const getWorkoutSelection = () => ({
+const getWorkoutSelection = () => ({
     id: true,
     date: true,
     user: { select: { username: true } },
