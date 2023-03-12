@@ -1,7 +1,7 @@
 import { Stack, Typography } from '@mui/material';
 import { useFetch } from '../../hooks/useFetch';
 
-const baseUrl = process.env.REACT_APP_DB_URL as string;
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 export interface WorkoutItemResponse {
     id: string;

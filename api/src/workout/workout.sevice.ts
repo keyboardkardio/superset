@@ -91,7 +91,8 @@ export async function findLastWorkout(userId: string): Promise<Partial<Workout> 
     const workout = await prisma.workout.findFirst({
         where: { userId },
         select: getWorkoutSelection(),
-        orderBy: { date: 'desc' },
+        orderBy: { date: 'asc' },
+        take: -1,
     });
 
     return workout || null;

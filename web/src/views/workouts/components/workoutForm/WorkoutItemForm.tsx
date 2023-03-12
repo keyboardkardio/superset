@@ -6,7 +6,7 @@ import { IExercise } from '../../../../types';
 import { WorkoutFormValues } from './WorkoutForm';
 import { WorkoutSetForm } from './WorkoutSetForm';
 
-const baseUrl = process.env.REACT_APP_DB_URL as string;
+const baseUrl = process.env.REACT_APP_API_BASE_URL as string;
 
 interface IProps {
     control: Control<WorkoutFormValues>;

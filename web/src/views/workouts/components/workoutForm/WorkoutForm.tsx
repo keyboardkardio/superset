@@ -4,7 +4,7 @@ import { Button, Stack, Typography } from '@mui/material';
 import { usePost } from '../../../../hooks/usePost';
 import { WorkoutItemForm } from './WorkoutItemForm';
 
-const baseUrl = process.env.REACT_APP_DB_URL as string;
+const baseUrl = process.env.REACT_APP_API_BASE_URL as string;
 
 export interface WorkoutFormValues {
     workoutItems: {

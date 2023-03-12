@@ -1,7 +1,7 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, Link, Stack, TextField, Typography } from '@mui/material';
 import { usePost } from '../../hooks/usePost';
 import * as yup from 'yup';
 
@@ -24,10 +24,15 @@ export const registrationSchema = yup.object({
 export interface RegistrationFormValues extends yup.InferType<typeof registrationSchema> {}
 
 export function Register() {
-    const { reset, register, handleSubmit, formState: { errors } } = useForm<RegistrationFormValues>({
+    const {
+        reset,
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<RegistrationFormValues>({
         resolver: yupResolver(registrationSchema),
     });
-    
+
     const navigate = useNavigate();
     const [post, response] = usePost(`${baseUrl}/users/register`);
     const onSubmit = async (credentials: RegistrationFormValues) => {
@@ -43,10 +48,11 @@ export function Register() {
     };
 
     return (
-        <>
-            <h1>Sign Up</h1>
+        <Box display={'flex'} flexDirection={'column'} justifyContent={'space-between'} height={'90vh'}>
+            <Typography variant={'h1'}>Sign Up</Typography>
             <Stack component={'form'} spacing={4} onSubmit={handleSubmit(onSubmit)}>
                 <TextField
+                    focused
                     type={'text'}
                     variant={'outlined'}
                     label={'Username'}
@@ -55,6 +61,7 @@ export function Register() {
                     helperText={errors.username?.message}
                 />
                 <TextField
+                    focused
                     type={'password'}
                     variant={'outlined'}
                     label={'Password'}
@@ -63,6 +70,7 @@ export function Register() {
                     helperText={errors.password?.message}
                 />
                 <TextField
+                    focused
                     type={'password'}
                     variant={'outlined'}
                     label={'Confirm Password'}
@@ -70,13 +78,13 @@ export function Register() {
                     error={errors.passwordConfirmation ? true : false}
                     helperText={errors.passwordConfirmation?.message}
                 />
-                <Link to='/signin'>
+                <Link component={RouterLink} to='/signin' sx={{ textDecoration: 'none' }}>
                     <Typography align={'center'}>Already have an account?</Typography>
                 </Link>
                 <Button type={'submit'} size={'large'} variant={'contained'}>
                     Register
                 </Button>
             </Stack>
-        </>
+        </Box>
     );
 }

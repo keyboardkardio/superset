@@ -18,18 +18,18 @@ import '@fontsource/roboto/700.css';
 const theme = createTheme({
     palette: {
         primary: {
-            main: '#888C81',
+            main: '#78f76d',
         },
         secondary: {
-            main: '#D9C9BA',
+            main: '#dd7a7a',
         },
         text: {
-            primary: '#1a1a1a',
+            primary: '#353535',
         },
     },
     typography: {
         h1: {
-            fontSize: '2rem',
+            fontSize: '3rem',
             fontWeight: 500,
         },
         h2: {
