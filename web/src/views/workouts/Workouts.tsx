@@ -1,5 +1,7 @@
-import { Stack, Typography } from '@mui/material';
+import { LinearProgress, Stack, Typography } from '@mui/material';
 import { AppBar } from '../../components/AppBar';
+import { Logo } from '../../components/Logo';
+import { Title } from '../../components/Title';
 import { useFetch } from '../../hooks/useFetch';
 
 export interface WorkoutItemResponse {
@@ -22,38 +24,53 @@ export interface WorkoutResponse {
 }
 
 export function Workouts() {
-    const { data, error } = useFetch<WorkoutResponse[]>('workouts');
+    const { data, isLoading, error } = useFetch<WorkoutResponse[]>('workouts');
 
     return (
         <>
+            <Logo />
             <Stack spacing={2}>
-                <Typography variant={'h1'}>Workouts</Typography>
-                <Stack spacing={2}>
-                    {data?.map((workout: WorkoutResponse) => (
-                        <Stack key={workout.id} spacing={2}>
-                            <Typography variant={'h2'} borderBottom={'1px solid #FFFFFC'}>
-                                {new Date(workout.date).toLocaleString('en-US', {
-                                    weekday: 'long',
-                                    month: 'long',
-                                    day: 'numeric',
-                                    year: 'numeric',
-                                })}
-                            </Typography>
-                            {workout.workoutItems.map((workoutItem: WorkoutItemResponse) => (
-                                <div key={workoutItem.id}>
-                                    <Typography variant={'h3'} textTransform={'capitalize'}>
-                                        {workoutItem.exercise.name}
+                <Title>Workouts</Title>
+                {isLoading ? (
+                    <LinearProgress color={'primary'} />
+                ) : (
+                    <Stack spacing={2}>
+                        {data?.length === 0 ? (
+                            <Typography align={'center'}>There are no workouts to display.</Typography>
+                        ) : (
+                            data?.map((workout: WorkoutResponse) => (
+                                <Stack key={workout.id} spacing={2}>
+                                    <Typography variant={'h4'} borderBottom={'1px solid #FFFFFC'}>
+                                        {new Date(workout.date).toLocaleString('en-US', {
+                                            weekday: 'long',
+                                            month: 'long',
+                                            day: 'numeric',
+                                            year: 'numeric',
+                                        })}
                                     </Typography>
-                                    {workoutItem.sets.map((set) => (
-                                        <Typography key={set.id} paddingLeft={'2rem'}>
-                                            {set.reps} reps x {set.weight} lbs
-                                        </Typography>
-                                    ))}
-                                </div>
-                            ))}
-                        </Stack>
-                    ))}
-                </Stack>
+                                    {workout.workoutItems.map(
+                                        (workoutItem: WorkoutItemResponse) => (
+                                            <div key={workoutItem.id}>
+                                                <Typography
+                                                    variant={'h5'}
+                                                    color={'primary'}
+                                                    textTransform={'capitalize'}
+                                                >
+                                                    {workoutItem.exercise.name}
+                                                </Typography>
+                                                {workoutItem.sets.map((set) => (
+                                                    <Typography key={set.id} paddingLeft={'2rem'}>
+                                                        {set.reps} reps x {set.weight} lbs
+                                                    </Typography>
+                                                ))}
+                                            </div>
+                                        ),
+                                    )}
+                                </Stack>
+                            ))
+                        )}
+                    </Stack>
+                )}
             </Stack>
             <AppBar />
         </>

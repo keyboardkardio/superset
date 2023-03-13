@@ -19,26 +19,32 @@ const theme = createTheme({
     palette: {
         mode: 'dark',
         primary: {
-            main: '#FF871F',
+            main: '#1cdc82',
         },
         secondary: {
-            main: '#FFFFFC',
+            main: '#ff5154',
         },
         text: {
-            primary: '#FFFFFC',
+            primary: '#e5ebea',
         },
     },
     typography: {
         h1: {
-            fontSize: '2rem',
+            fontSize: '3rem',
             fontWeight: 500,
         },
         h2: {
-            fontSize: '1.4rem',
+            fontSize: '2.6rem',
         },
         h3: {
-            fontSize: '1rem',
+            fontSize: '2rem',
         },
+        h4: {
+            fontSize: '1.6rem'
+        },
+        h5: {
+            fontSize: '1.2rem',
+        }
     },
 });
 

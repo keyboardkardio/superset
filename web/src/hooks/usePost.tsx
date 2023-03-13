@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const baseUrl = process.env.REACT_APP_DB_URL;
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 interface RequestOptions {
     body?: Record<string, any>;
@@ -10,7 +10,7 @@ interface RequestOptions {
 interface Response<T> {
     data: T | null;
     error: Error | null;
-    status: string | number;
+    status: number;
     isLoading: boolean;
 }
 
@@ -18,20 +18,20 @@ export function usePost<T>(url: string) {
     const [response, setResponse] = useState<Response<T>>({
         data: null,
         error: null,
-        status: '',
+        status: 0,
         isLoading: false,
     });
 
     const post = async (options?: RequestOptions) => {
         const isUrlAuth = url.endsWith('login' || 'register');
         try {
-            setResponse({ data: null, error: null, status: '', isLoading: true });
-            const response = await fetch(`${baseUrl}${url}`, {
+            setResponse({ data: null, error: null, status: 0, isLoading: true });
+            const response = await fetch(`${baseUrl}/${url}`, {
                 method: 'POST',
                 headers: isUrlAuth
                     ? { 'Content-Type': 'application/json' }
                     : {
-                          'Authorization': `Bearer ${JSON.parse(localStorage.getItem('@superset:token') as string)}`,
+                          'Authorization': `Bearer ${localStorage.getItem('@superset:token') as string}`,
                           'Content-Type': 'application/json',
                       },
                 body: options?.body ? JSON.stringify(options.body) : undefined,
@@ -40,7 +40,7 @@ export function usePost<T>(url: string) {
 
             setResponse({ data, error: null, status: response.status, isLoading: false });
         } catch (error: any) {
-            setResponse({ data: null, error, status: response.status, isLoading: false });
+            setResponse({ data: null, error, status: error.status, isLoading: false });
         }
     };
 

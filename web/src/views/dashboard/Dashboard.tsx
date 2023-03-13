@@ -1,38 +1,63 @@
-import { Stack, Typography } from '@mui/material';
+import { LinearProgress, Stack, Typography } from '@mui/material';
+
 import { AppBar } from '../../components/AppBar';
+import { Logo } from '../../components/Logo';
+import { Title } from '../../components/Title';
 import { useFetch } from '../../hooks/useFetch';
 import { WorkoutItemResponse, WorkoutResponse } from '../workouts/Workouts';
 
 export function Dashboard() {
-    const { data, error } = useFetch<WorkoutResponse[]>('workouts');
+    const { data, isLoading, error } = useFetch<WorkoutResponse[]>('workouts');
     const lastWorkout = data?.[data?.length - 1];
 
     return (
         <>
+            <Logo />
             <Stack spacing={2}>
-                <Typography variant={'h1'}>Last Workout</Typography>
-                <Stack border={'1px solid #FF871F'} borderRadius={'0.5rem'} padding={'1rem'}>
-                    <Typography variant={'h2'} textAlign={'center'} marginBottom={'1rem'}>
-                        {new Date(lastWorkout?.date as string).toLocaleString('en-US', {
-                            weekday: 'long',
-                            month: 'long',
-                            day: 'numeric',
-                            year: 'numeric',
-                        })}
-                    </Typography>
-                    {lastWorkout?.workoutItems.map((workoutItem: WorkoutItemResponse) => (
-                        <div key={workoutItem.id}>
-                            <Typography variant={'h3'} textTransform={'capitalize'}>
-                                {workoutItem.exercise.name}
-                            </Typography>
-                            {workoutItem.sets.map((set, index) => (
-                                <Typography key={set.id}>
-                                    Set {index + 1} &nbsp; {set.reps} reps x {set.weight} lbs
+                <Title>Last Workout</Title>
+                {isLoading ? (
+                    <LinearProgress color={'primary'} />
+                ) : (
+                    <Stack border={'1px solid #1cdc82'} borderRadius={'0.5rem'} padding={'1rem'}>
+                        {lastWorkout ? (
+                            <>
+                                <Typography
+                                    fontSize={'1.2rem'}
+                                    textAlign={'center'}
+                                    borderBottom={'1px solid'}
+                                >
+                                    {new Date(lastWorkout?.date as string).toLocaleString('en-US', {
+                                        weekday: 'long',
+                                        month: 'long',
+                                        day: 'numeric',
+                                        year: 'numeric',
+                                    })}
                                 </Typography>
-                            ))}
-                        </div>
-                    ))}
-                </Stack>
+                                {lastWorkout?.workoutItems.map(
+                                    (workoutItem: WorkoutItemResponse) => (
+                                        <Stack key={workoutItem.id} marginTop={'1rem'}>
+                                            <Typography
+                                                variant={'h5'}
+                                                color={'primary'}
+                                                textTransform={'capitalize'}
+                                            >
+                                                {workoutItem.exercise.name}
+                                            </Typography>
+                                            {workoutItem.sets.map((set, index) => (
+                                                <Typography key={set.id} paddingLeft={'1rem'}>
+                                                    Set {index + 1} &rarr; {set.reps} reps x{' '}
+                                                    {set.weight} lbs
+                                                </Typography>
+                                            ))}
+                                        </Stack>
+                                    ),
+                                )}
+                            </>
+                        ) : (
+                            <Typography align={'center'}>There are no workouts to display.</Typography>
+                        )}
+                    </Stack>
+                )}
             </Stack>
             <AppBar />
         </>

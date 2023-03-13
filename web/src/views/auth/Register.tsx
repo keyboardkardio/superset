@@ -1,10 +1,14 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Stack, TextField, Typography } from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { Stack, Link, TextField, Typography } from '@mui/material';
 import * as yup from 'yup';
 
 import { usePost } from '../../hooks/usePost';
+import { Logo } from '../../components/Logo';
+import { Title } from '../../components/Title';
+import { useEffect } from 'react';
 
 export const registrationSchema = yup.object({
     username: yup
@@ -23,58 +27,74 @@ export const registrationSchema = yup.object({
 export interface RegistrationFormValues extends yup.InferType<typeof registrationSchema> {}
 
 export function Register() {
-    const { reset, register, handleSubmit, formState: { errors } } = useForm<RegistrationFormValues>({
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<RegistrationFormValues>({
         resolver: yupResolver(registrationSchema),
     });
-    
+
     const navigate = useNavigate();
     const [post, response] = usePost('users/register');
     const onSubmit = async (credentials: RegistrationFormValues) => {
         try {
             await post({ body: credentials });
-            if (response.status == 201) {
-                reset();
-                navigate('/signin');
-            }
         } catch (error) {
             console.log(error);
         }
     };
 
+    useEffect(() => {
+        if (response.status === 201) {
+            navigate('/signin');
+        }
+    }, [response.data]);
+
     return (
         <>
-            <h1>Sign Up</h1>
-            <Stack component={'form'} spacing={4} onSubmit={handleSubmit(onSubmit)}>
-                <TextField
-                    type={'text'}
-                    variant={'outlined'}
-                    label={'Username'}
-                    {...register('username')}
-                    error={errors.username ? true : false}
-                    helperText={errors.username?.message}
-                />
-                <TextField
-                    type={'password'}
-                    variant={'outlined'}
-                    label={'Password'}
-                    {...register('password')}
-                    error={errors.password ? true : false}
-                    helperText={errors.password?.message}
-                />
-                <TextField
-                    type={'password'}
-                    variant={'outlined'}
-                    label={'Confirm Password'}
-                    {...register('passwordConfirmation')}
-                    error={errors.passwordConfirmation ? true : false}
-                    helperText={errors.passwordConfirmation?.message}
-                />
-                <Link to='/signin'>
-                    <Typography align={'center'}>Already have an account?</Typography>
-                </Link>
-                <Button type={'submit'} size={'large'} variant={'contained'}>
-                    Register
-                </Button>
+            <Logo />
+            <Stack spacing={4}>
+                <Title>Sign Up</Title>
+                <Stack component={'form'} spacing={4} onSubmit={handleSubmit(onSubmit)}>
+                    <TextField
+                        error={errors.username ? true : false}
+                        helperText={errors.username?.message}
+                        {...register('username')}
+                        variant={'outlined'}
+                        label={'Username'}
+                        type={'text'}
+                    />
+                    <TextField
+                        helperText={errors.password?.message}
+                        error={errors.password ? true : false}
+                        {...register('password')}
+                        variant={'outlined'}
+                        label={'Password'}
+                        type={'password'}
+                    />
+                    <TextField
+                        helperText={errors.passwordConfirmation?.message}
+                        error={errors.passwordConfirmation ? true : false}
+                        {...register('passwordConfirmation')}
+                        label={'Confirm Password'}
+                        variant={'outlined'}
+                        type={'password'}
+                    />
+                    <Link component={RouterLink} to='/signin' sx={{ textDecoration: 'none' }}>
+                        <Typography align={'center'} color={'#e5ebea'}>
+                            Already have an account?
+                        </Typography>
+                    </Link>
+                    <LoadingButton
+                        loading={response.isLoading}
+                        variant={'contained'}
+                        type={'submit'}
+                        size={'large'}
+                    >
+                        Register
+                    </LoadingButton>
+                </Stack>
             </Stack>
         </>
     );

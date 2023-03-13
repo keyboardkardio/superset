@@ -1,6 +1,7 @@
 import { Control, Controller, useFieldArray, UseFormRegister } from 'react-hook-form';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { Button, FormControl, InputLabel, MenuItem, Paper, Select, Stack } from '@mui/material';
+import { Button, FormControl, InputLabel, MenuItem, Paper, Select, Stack, Typography } from '@mui/material';
+
 import { useFetch } from '../../../../hooks/useFetch';
 import { IExercise } from '../../../../types';
 import { WorkoutFormValues } from './WorkoutForm';
@@ -35,7 +36,7 @@ export function WorkoutItemForm({ control, register }: IProps) {
                                         >
                                             {data?.map((exercise: IExercise) => (
                                                 <MenuItem key={exercise.id} value={exercise.id}>
-                                                    {exercise.name}
+                                                    <Typography textTransform={'capitalize'}>{exercise.name}</Typography>
                                                 </MenuItem>
                                             ))}
                                         </Select>

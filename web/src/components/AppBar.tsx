@@ -10,7 +10,7 @@ export function AppBar() {
     return (
         <Stack
             direction={'row'}
-            border={'1px solid #FF871F'}
+            border={'1px solid #1cdc82'}
             height={'3rem'}
             borderRadius={'2rem'}
             justifyContent={'space-around'}
